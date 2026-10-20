@@ -647,7 +647,7 @@ async function stampImage(file,loc,taskLabel,stageLabel,meta){
     const lines=[
       loc.n,
       `${taskLabel.toUpperCase()} · ${stageLabel.toUpperCase()}`,
-      meta.takenAt ? `Tarikh foto: ${fmtStamp(new Date(meta.takenAt))}` : `Tarikh foto: tiada data EXIF (dimuat naik ${fmtStamp(new Date())})`,
+      `Tarikh (masa telefon): ${fmtStamp(new Date(meta.takenAt))}`,
       meta.lat!=null ? `GPS (${gpsLabel(meta.gpsSource)}): ${meta.lat.toFixed(6)}, ${meta.lng.toFixed(6)}${meta.gpsAcc?` ±${meta.gpsAcc} m`:""}` : `GPS: tiada (lokasi telefon tidak dibenarkan, foto tiada GPS)`
     ];
     const bh=pad*2+lh*lines.length;
@@ -671,16 +671,18 @@ async function handleUpload(task,stage,file){
   const T=secOf(task), S=slotOf(task,stage);
   state.busy[key]=true; closeViewer(); refresh();
   try{
+    const now=new Date();   // date/time comes from the phone's own clock at upload
     const [meta,live]=await Promise.all([readMeta(file),currentPosition()]);
+    meta.exifAt=meta.takenAt; meta.takenAt=now.toISOString();
     if(live){ meta.lat=live.lat; meta.lng=live.lng; meta.gpsSource="telefon"; meta.gpsAcc=live.acc; }
     else if(meta.lat!=null){ meta.gpsSource="foto"; meta.gpsAcc=null; }
     const blob=await stampImage(file,loc,T.label,S.label,meta);
     const res=await assets.upload(blob,{path:`${state.month}/${loc.id}/${task}-${stage}-${Date.now()}.jpg`});
-    await writePhoto(loc,task,stage,{asset:res.id,by:uid,user:state.me?.username||null,at:new Date().toISOString(),takenAt:meta.takenAt,lat:meta.lat,lng:meta.lng,gpsSource:meta.gpsSource||null,gpsAcc:meta.gpsAcc??null,width:meta.width,height:meta.height,bytes:meta.bytes});
+    await writePhoto(loc,task,stage,{asset:res.id,by:uid,user:state.me?.username||null,at:new Date().toISOString(),takenAt:meta.takenAt,exifAt:meta.exifAt||null,dateSource:"telefon",lat:meta.lat,lng:meta.lng,gpsSource:meta.gpsSource||null,gpsAcc:meta.gpsAcc??null,width:meta.width,height:meta.height,bytes:meta.bytes});
     if(prev && prev!==res.id) assets.delete(prev).catch(()=>{});
-    const noGps=meta.lat==null, noDate=!meta.takenAt;
-    if(noGps||noDate) toast(`Disimpan, tetapi ${[noGps&&"lokasi GPS tidak dapat dibaca",noDate&&"foto tiada tarikh"].filter(Boolean).join(" dan ")}.${noGps?" Benarkan akses lokasi untuk aplikasi ini dalam pelayar.":""}`,true);
-    else if(meta.takenAt.slice(0,7)!==thisMonth(new Date(meta.takenAt)) || thisMonth(new Date(meta.takenAt))!==state.month) toast(`Disimpan. Perhatian: foto diambil pada ${fmtStamp(new Date(meta.takenAt))}, bukan dalam bulan ${fmtMonth(state.month)}.`,true);
+    const noGps=meta.lat==null;
+    if(noGps) toast("Disimpan, tetapi lokasi GPS tidak dapat dibaca. Benarkan akses lokasi untuk aplikasi ini dalam pelayar.",true);
+    else if(thisMonth(now)!==state.month) toast(`Disimpan. Perhatian: tarikh telefon ${fmtStamp(now)} bukan dalam bulan ${fmtMonth(state.month)}.`,true);
     else toast(`${T.label} · ${S.label} disimpan`);
   }catch(e){
     const c=e?.code;
