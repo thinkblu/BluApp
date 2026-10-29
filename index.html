@@ -83,6 +83,7 @@ h1{font:700 2rem/1.05 var(--f-display);margin:14px 0 4px;text-wrap:balance;lette
 .za svg{width:14px;height:14px;vertical-align:-2px;margin-right:4px}
 .za-fix,.za-fix .num{color:var(--danger)!important}
 .za-pend,.za-pend .num{color:var(--accent)!important}
+.za-unsent,.za-unsent .num{color:var(--warn)!important}
 /* Perlu tindakan */
 .todo{margin-top:18px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
 .todo:empty{display:none}
@@ -232,10 +233,22 @@ h1{font:700 2rem/1.05 var(--f-display);margin:14px 0 4px;text-wrap:balance;lette
 .row-main{min-width:0}
 .row-t{font-weight:600;line-height:1.25}
 .row-s{color:var(--muted);font-size:.88rem;margin-top:2px}
+.row-d{display:flex;align-items:center;gap:5px;margin-top:4px;font:500 .74rem/1.2 var(--f-mono);color:var(--ok)}
+.row-d svg{width:12px;height:12px;flex:none}
+.nw{white-space:nowrap}
+.row-n{margin-top:4px;font-size:.8rem;color:var(--ink);opacity:.8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.note textarea{display:block;width:100%;min-height:96px;resize:vertical;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit;font-size:16px;line-height:1.4}
+.note textarea:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px var(--accent-soft)}
+.note textarea:disabled{opacity:.7}
+.note-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px}
+.note-meta{font:500 .78rem/1.3 var(--f-mono);color:var(--muted)}
+.note-dirty{color:var(--warn);font-weight:600}
+.note .sbtn{min-width:96px;min-height:38px}
 .row-side{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
 .dots{display:grid;grid-template-columns:repeat(8,6px);gap:2px}
 .dots i{width:6px;height:6px;border-radius:2px;background:var(--sunken);border:1px solid var(--line)}
 .dots i.pend{background:var(--accent);border-color:var(--accent)}
+.dots i.draft{background:var(--warn-soft);border-color:var(--warn)}
 .dots i.ok{background:var(--ok);border-color:var(--ok)}
 .dots i.flag{background:var(--danger);border-color:var(--danger)}
 .empty{padding:28px 16px;text-align:center;color:var(--muted)}
@@ -247,6 +260,7 @@ h1{font:700 2rem/1.05 var(--f-display);margin:14px 0 4px;text-wrap:balance;lette
 .p-ready{background:var(--accent-soft);color:var(--accent)}
 .p-done{background:var(--ok-soft);color:var(--ok)}
 .p-check{background:var(--accent-soft);color:var(--accent)}
+.p-unsent{background:var(--warn-soft);color:var(--warn)}
 .p-ready{background:var(--ok-soft);color:var(--ok)}
 .p-fix{background:color-mix(in srgb,var(--danger) 14%,var(--surface));color:var(--danger)}
 
@@ -266,6 +280,16 @@ h1{font:700 2rem/1.05 var(--f-display);margin:14px 0 4px;text-wrap:balance;lette
 .slot-l .req{color:var(--danger)}
 .slot-l .tick{color:var(--ok)}
 .slot-l .xmark{color:var(--danger)}
+.slot{container-type:inline-size}
+.tacts{display:grid;grid-template-columns:1fr;gap:4px}
+@container (min-width:150px){.tacts{grid-template-columns:1fr 1fr}}
+.tact{display:flex;align-items:center;justify-content:center;gap:5px;min-height:34px;padding:4px 6px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--accent);font:600 .74rem/1 var(--f-body);cursor:pointer;white-space:nowrap;min-width:0}
+.tact svg{width:14px;height:14px;flex:none}
+.tact.danger{color:var(--danger)}
+.tact:focus-within{outline:3px solid var(--accent);outline-offset:1px}
+.tacts.ask{align-items:center}
+.tacts.ask span{grid-column:1/-1;text-align:center;font-weight:600;font-size:.78rem;color:var(--danger)}
+.tacts.ask .tact.danger{background:var(--danger);border-color:var(--danger);color:#fff}
 .slot-note{color:var(--danger);font-size:.78rem;line-height:1.25;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
 .tile.filled.rv-flag{border:3px solid var(--danger)}
 .tile.filled.rv-ok{border-color:var(--ok)}
@@ -275,6 +299,14 @@ h1{font:700 2rem/1.05 var(--f-display);margin:14px 0 4px;text-wrap:balance;lette
 .tile-rv.ok svg{width:12px;height:12px}
 .tile-rv.flag{background:#c62828}
 .tile-rv.pend{background:rgba(15,28,54,.78)}
+.tile-rv.draft{background:var(--warn)}
+.sentline{display:flex;align-items:center;gap:6px;margin-top:8px;font:500 .8rem/1.3 var(--f-mono);color:var(--muted)}
+.sentline svg{width:14px;height:14px;color:var(--ok);flex:none}
+.btn.send{display:flex;align-items:center;justify-content:center;gap:8px}
+.btn.send svg{width:18px;height:18px}
+.send-confirm{display:flex;flex-direction:column;gap:6px;padding:12px 14px;border-radius:12px;background:var(--surface);border:1px solid var(--accent)}
+.send-confirm span{font-size:.88rem;color:var(--muted)}
+.send-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
 .flagbar{display:flex;gap:10px;align-items:flex-start;margin-top:12px;padding:12px 14px;border-radius:10px;background:color-mix(in srgb,var(--danger) 10%,var(--surface));border:1px solid color-mix(in srgb,var(--danger) 45%,transparent)}
 .flagbar svg{width:20px;height:20px;color:var(--danger);flex:none;margin-top:1px}
 .flagbar b{display:block;color:var(--danger)}
@@ -307,9 +339,6 @@ h1{font:700 2rem/1.05 var(--f-display);margin:14px 0 4px;text-wrap:balance;lette
 .btn.ghost{background:none;border:1px solid var(--line);color:var(--ink)}
 .btn.xl{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--surface);border:1px solid var(--accent);color:var(--accent)}
 .btn.xl svg{width:18px;height:18px}
-.btn.okb{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--ok);color:#fff}
-.btn.okb svg{width:18px;height:18px}
-.btn.okb:disabled{background:var(--sunken);color:var(--muted)}
 .btn.xl:disabled{border-color:var(--line);color:var(--muted)}
 .done-card{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:10px;background:var(--ok-soft);color:var(--ink)}
 .done-card svg{width:26px;height:26px;color:var(--ok);flex:none}
@@ -538,8 +567,9 @@ const STAGES = [{key:"sebelum",label:"Sebelum"},{key:"semasa",label:"Semasa"},{k
 const TOTAL = TASKS.length * STAGES.length;
 // Extra site photos: shown on the kolam page, kept in the monthly ZIP, never put in the LK-1e reports
 const EXTRA = [
-  {key:"inlet",label:"Gambar Inlet",slots:[1,2,3].map(n=>({key:"f"+n,label:"Foto "+n}))},
-  {key:"outlet",label:"Gambar Outlet",slots:[1,2,3].map(n=>({key:"f"+n,label:"Foto "+n}))},
+  // Keys stay f1/f2/f3 so photos already uploaded keep their place; only the names changed
+  {key:"inlet",label:"Gambar Inlet",slots:["Sebelum","Semasa","Selepas"].map((x,i)=>({key:"f"+(i+1),label:x}))},
+  {key:"outlet",label:"Gambar Outlet",slots:["Sebelum","Semasa","Selepas"].map((x,i)=>({key:"f"+(i+1),label:x}))},
   {key:"kolam",label:"Gambar Kolam",slots:["A","B","C","D"].map(x=>({key:x.toLowerCase(),label:"Bahagian "+x})),wide:true},
 ];
 const SECTIONS = [...TASKS.map(t=>({...t,slots:STAGES,report:true})), ...EXTRA];
@@ -556,6 +586,7 @@ const streetName = l => fileSafe(l.j + (STREET_COUNT[l.j.toLowerCase()]>1 ? " " 
 const SHEET_NAMES = Object.fromEntries(lk1eSheetNames(LOCS).map((n,i)=>[LOCS[i].id,n]));
 
 const ICON = {
+  send:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>',
   flag:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4"/><path d="M5 4h12l-2.5 4.5L17 13H5"/></svg>',
   back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>',
   chev:'<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>',
@@ -648,11 +679,10 @@ const names = {};
 function thisMonth(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`}
 function shiftMonth(m,by){const [y,mo]=m.split("-").map(Number);return thisMonth(new Date(y,mo-1+by,1))}
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function fmtTime(iso){try{return new Date(iso).toLocaleTimeString("ms-MY",{hour:"2-digit",minute:"2-digit",hour12:false})}catch{return""}}
 const BULAN=["Januari","Februari","Mac","April","Mei","Jun","Julai","Ogos","September","Oktober","November","Disember"];
 function fmtMonth(m){const [y,mo]=m.split("-").map(Number);return `${BULAN[mo-1]} ${y}`}
 function p2(n){return String(n).padStart(2,"0")}
-function fmtStamp(d){return `${p2(d.getDate())}/${p2(d.getMonth()+1)}/${d.getFullYear()} ${p2(d.getHours())}:${p2(d.getMinutes())}`}
+function fmtStamp(d){return `${p2(d.getDate())}/${p2(d.getMonth()+1)}/${d.getFullYear()}`} // date only, no time
 async function readMeta(file){
   const m={takenAt:null,lat:null,lng:null};
   try{
@@ -693,23 +723,30 @@ function uploadsOf(r,t,s){const e=r?.photos?.[t]?.[s];return Number(e?.uploads)|
 function countPhotos(r){let n=0;for(const t of TASKS)for(const s of STAGES)if(photo(r,t.key,s.key))n++;return n}
 const reportedAt=r=>r?.reportAt||r?.submittedAt||null;
 function countAll(r){let n=0;for(const [t,s] of ALL_SLOTS)if(photo(r,t,s))n++;return n}
-// Admin check of one photo slot: none (no photo), pend (belum disemak), ok (disahkan), flag (ditolak)
+// One photo slot: none (no photo), draft (uploaded, not yet sent with Hantar), pend (sent, belum disemak),
+// ok (disahkan), flag (ditolak). Admins only check photos that were sent.
+const sentOf=locId=>state.reports[locId]?.sent||null;
 function check(locId,t,s){
   const p=photo(state.reports[locId],t,s); if(!p) return {st:"none"};
   const rv=state.reviews[locId]?.[t]?.[s];
   if(rv&&rv.asset===p.asset) return {st:rv.state==="flag"?"flag":"ok",rv,p};
-  return {st:"pend",p,prev:rv&&rv.state==="flag"?rv:null}; // a retaken photo needs checking again
+  const prev=rv&&rv.state==="flag"?rv:null; // a retaken photo needs sending and checking again
+  return {st:sentOf(locId)?.assets?.[t]?.[s]===p.asset?"pend":"draft",p,prev};
 }
-function tally(locId){ const c={up:0,ok:0,flag:0,pend:0}; for(const [t,s] of ALL_SLOTS){ const x=check(locId,t,s).st; if(x!=="none"){c.up++;c[x]++;} } return c; }
+function tally(locId){ const c={up:0,ok:0,flag:0,pend:0,draft:0}; for(const [t,s] of ALL_SLOTS){ const x=check(locId,t,s).st; if(x!=="none"){c.up++;c[x]++;} } return c; }
 function status(locId){
   const r=state.reports[locId], c=tally(locId);
   if(c.flag) return "fix";
-  if(reportedAt(r)) return "done";
+  if(reportedAt(r)) return state.isAdmin?"done":"ready"; // workers never see report state
   if(c.ok===ALL_TOTAL) return "ready";
-  if(c.up===ALL_TOTAL) return "check";
+  if(c.up===ALL_TOTAL) return c.draft?"unsent":"check";
   return c.up?"prog":"none";
 }
-const STATUS_LABEL={none:"Belum mula",prog:"Dalam proses",check:"Menunggu semakan",fix:"Perlu ambil semula",ready:"Lengkap",done:"Laporan dicipta"};
+// Workers may change a photo only until it is sent, or when the admin rejects it (the database enforces the same)
+const canChange=(locId,t,s)=>state.isAdmin||["none","draft","flag"].includes(check(locId,t,s).st);
+const canSend=c=>c.up===ALL_TOTAL&&!c.flag&&c.draft>0;
+const STATUS_LABEL={none:"Belum mula",prog:"Dalam proses",unsent:"Belum dihantar",check:"Menunggu semakan",fix:"Perlu ambil semula",ready:"Lengkap",done:"Laporan dicipta"};
+const sentLine=(sn,long)=>sn?`<span>Dihantar <span class="nw">${long?fmtStamp(new Date(sn.at)):fmtDay(sn.at)}</span>${long&&sn.user?` · ${esc(showName(sn.user))}`:""}${sn.n>1?` · <span class="nw">kali ke-${sn.n}</span>`:""}</span>`:"";
 const nextPending=(locId,t,s)=>{ const i=ALL_SLOTS.findIndex(([a,b])=>a===t&&b===s);
   for(let k=1;k<=ALL_SLOTS.length;k++){ const [a,b]=ALL_SLOTS[(i+k)%ALL_SLOTS.length]; if(check(locId,a,b).st==="pend") return [a,b]; } return null; };
 const reviewErrMsg=e=>/photo_reviews|42P01|PGRST20/i.test(`${e?.code||""} ${e?.message||""}`)?"Semakan foto belum disediakan. Jalankan photo_reviews.sql dalam Supabase.":/row-level|42501|permission/i.test(e?.message||"")?"Hanya admin boleh menyemak foto.":"Tidak dapat disimpan. Semak sambungan dan cuba lagi.";
@@ -772,7 +809,7 @@ async function stampImage(file,loc,taskLabel,stageLabel,meta){
     const lines=[
       loc.n,
       `${taskLabel.toUpperCase()} · ${stageLabel.toUpperCase()}`,
-      `Tarikh (masa telefon): ${fmtStamp(new Date(meta.takenAt))} · Muatnaik ${meta.uploads}`,
+      `Tarikh (telefon): ${fmtStamp(new Date(meta.takenAt))} · Muatnaik ${meta.uploads}`,
       meta.lat!=null ? `GPS (${gpsLabel(meta.gpsSource)}): ${meta.lat.toFixed(6)}, ${meta.lng.toFixed(6)}${meta.gpsAcc?` ±${meta.gpsAcc} m`:""}` : `GPS: tiada (lokasi telefon tidak dibenarkan, foto tiada GPS)`
     ];
     const bh=pad*2+lh*lines.length;
@@ -792,6 +829,7 @@ async function handleUpload(task,stage,file){
   const loc=byId[state.locId]; if(!loc||!file) return;
   if(!file.type.startsWith("image/")){toast("Sila pilih fail gambar.",true);return}
   const key=`${loc.id}|${task}|${stage}`; if(state.busy[key]) return;
+  if(!canChange(loc.id,task,stage)){ toast("Foto ini telah dihantar dan tidak boleh ditukar.",true); return; }
   const prev=photo(state.reports[loc.id],task,stage)?.asset;
   const uploads=uploadsOf(state.reports[loc.id],task,stage)+1;
   const T=secOf(task), S=slotOf(task,stage);
@@ -812,8 +850,23 @@ async function handleUpload(task,stage,file){
     else toast(`${T.label} · ${S.label} disimpan`);
   }catch(e){
     const c=e?.code;
-    toast(c==="too_large"?"Gambar terlalu besar.":c==="rate_limited"||c==="resource_exhausted"?"Terlalu banyak muat naik. Cuba lagi sebentar.":c==="quota_or_state"||c==="quota_exceeded"?"Ruang simpanan penuh. Hubungi pengurus projek.":e?.message==="decode"?"Gambar tidak dapat dibaca. Cuba format JPG.":"Muat naik gagal. Semak sambungan dan cuba lagi.",true);
+    toast(c==="too_large"?"Gambar terlalu besar.":c==="rate_limited"||c==="resource_exhausted"?"Terlalu banyak muat naik. Cuba lagi sebentar.":c==="quota_or_state"||c==="quota_exceeded"?"Ruang simpanan penuh. Hubungi pengurus projek.":e?.message==="decode"?"Gambar tidak dapat dibaca. Cuba format JPG.":/dihantar/i.test(e?.message||"")?"Foto ini telah dihantar dan tidak boleh ditukar.":"Muat naik gagal. Semak sambungan dan cuba lagi.",true);
   }finally{ delete state.busy[key]; refresh(); }
+}
+
+/* ---------- Hantar ---------- */
+async function sendKolam(){
+  const loc=byId[state.locId], month=state.month; if(!loc||state.sending) return;
+  if(!canSend(tally(loc.id))) return;
+  state.sending=true; state.sendConfirm=false; renderLoc();
+  try{
+    const doc=await rpc("set_sent",{p_month:month,p_loc:loc.id});
+    if(doc&&state.month===month) state.reports[loc.id]=doc;
+    toast("Foto dihantar kepada admin");
+  }catch(e){
+    const m=`${e?.code||""} ${e?.message||""}`;
+    toast(/ditolak/i.test(m)?"Ambil semula foto yang ditolak dahulu.":/set_sent|PGRST202|42883/i.test(m)?"Hantar belum disediakan. Jalankan hantar.sql dalam Supabase.":"Tidak dapat dihantar. Semak sambungan dan cuba lagi.",true);
+  }finally{ state.sending=false; refresh(); }
 }
 
 /* ---------- admin photo checks ---------- */
@@ -839,16 +892,6 @@ async function reviewCurrent(st){
     if(state.viewing===v){ v.busy=false; renderViewer(); }
   }
 }
-async function approveAllPending(){
-  const loc=byId[state.locId]; if(!state.isAdmin||!loc||state.approving) return;
-  const items=ALL_SLOTS.map(([t,s])=>[t,s,check(loc.id,t,s)]).filter(x=>x[2].st==="pend").map(([t,s,c])=>[t,s,c.p.asset]);
-  if(!items.length) return;
-  state.approving=true; renderLoc();
-  try{ await reviewPhotos(loc.id,items,"ok"); toast(`${items.length} foto disahkan`); }
-  catch(e){ toast(reviewErrMsg(e),true); }
-  finally{ state.approving=false; refresh(); }
-}
-
 /* ---------- per-kolam LK-1e report ---------- */
 async function createKolamReport(){
   if(state.making) return;
@@ -922,6 +965,7 @@ function syncRange(){ // follow the month picker until the admin picks their own
   return state.range;
 }
 state.rcache={}; // month -> {reports,reviews,at}
+state.noteDraft={}; // "month|locId" -> unsaved remark text
 async function monthData(m,fresh){
   if(m===state.month&&state.loaded&&!state.reviewErr) return {reports:state.reports,reviews:state.reviews};
   const c=state.rcache[m]; if(c&&!fresh&&Date.now()-c.at<120000) return c;
@@ -1083,7 +1127,7 @@ const showName=u=>usersMap[u]?.display||u;
 function signedIn(username,d){
   const mustChange=!!d?.mustChange;
   state.me={username,display:d?.display||username,role:isAdminDoc(d)?"admin":"worker",mustChange};
-  state.isAdmin=state.me.role==="admin";
+  state.isAdmin=state.me.role==="admin"; state.filter="all"; state.q=""; // a new sign-in starts with a clean list
   saveSession(username); subscribeUsers(); subscribeMonth();
   go(mustChange?"pwchange":"zones",{forced:mustChange});
 }
@@ -1348,7 +1392,7 @@ function signOut(){
   state.me=null; state.isAdmin=false; saveSession(null);
   if(unsubUsers){ unsubUsers(); unsubUsers=null; } usersMap={};
   if(sb) sb.auth.signOut().catch(()=>{});
-  if(unsub){unsub();unsub=null} state.reports={}; state.reviews={};
+  if(unsub){unsub();unsub=null} state.reports={}; state.reviews={}; state.noteDraft={}; state.rcache={};
   go("auth",{authMode:"login"});
 }
 function renderAuth(){
@@ -1397,7 +1441,7 @@ function go(screen,opts={}){
   if(!["auth","admin"].includes(screen) && !state.me) screen="auth";
   if(state.me?.mustChange && screen!=="admin") { screen="pwchange"; opts={...opts,forced:true}; }
   if(screen==="admin"){ state.adminEdit=null; state.adminDel=null; subscribeUsers(); setTimeout(()=>{ if(db) loadAdminMonth(); loadStorage(); },0); }
-  Object.assign(state,{screen},opts);
+  Object.assign(state,{screen},opts); state.sendConfirm=false; state.delAsk=null;
   closeViewer();
   document.getElementById("datebox").hidden = ["auth","admin","pwchange"].includes(screen);
   document.getElementById("topbrand").hidden = !["auth","zones"].includes(screen);
@@ -1426,11 +1470,11 @@ function renderBanner(){
 }
 
 function zoneStats(z){
-  const locs=LOCS.filter(l=>l.z===z), s={total:locs.length,done:0,ready:0,prog:0,fix:0,pend:0,pendLoc:0,flag:0};
+  const locs=LOCS.filter(l=>l.z===z), s={total:locs.length,done:0,ready:0,prog:0,fix:0,pend:0,pendLoc:0,flag:0,unsent:0};
   for(const l of locs){
     const st=status(l.id), c=tally(l.id);
     if(st==="done")s.done++; else if(st==="ready")s.ready++; else if(st==="fix")s.fix++; else if(st!=="none")s.prog++;
-    s.flag+=c.flag; s.pend+=c.pend; if(c.pend)s.pendLoc++;
+    s.flag+=c.flag; s.pend+=c.pend; if(c.pend)s.pendLoc++; if(st==="unsent")s.unsent++;
   }
   return s;
 }
@@ -1458,8 +1502,9 @@ function updateZones(){
   for(const z of ["A","B"]){
     const s=zoneStats(z), m=document.getElementById("zm-"+z), b=document.getElementById("zb-"+z); if(!m) continue;
     const alerts=[s.fix?`<span class="za za-fix">${ICON.flag}<span class="num">${s.fix}</span> kolam perlu ambil semula</span>`:"",
+      s.unsent?`<span class="za za-unsent"><span class="num">${s.unsent}</span> kolam belum dihantar</span>`:"",
       s.pend?`<span class="za za-pend"><span class="num">${s.pend}</span> foto belum disemak</span>`:""].join("");
-    m.innerHTML=`<span class="num">${s.total}</span> kolam · <span class="num">${s.done}</span> laporan dicipta · <span class="num">${s.ready}</span> lengkap · <span class="num">${s.prog}</span> dalam proses${alerts?`<span class="zalerts">${alerts}</span>`:""}`;
+    m.innerHTML=`<span class="num">${s.total}</span> kolam · ${state.isAdmin?`<span class="num">${s.done}</span> laporan dicipta · `:""}<span class="num">${s.ready}</span> lengkap · <span class="num">${s.prog}</span> dalam proses${alerts?`<span class="zalerts">${alerts}</span>`:""}`;
     const w=n=>`${n/s.total*100}%`;
     b.innerHTML=`<i class="b-ok" style="width:${w(s.done)}"></i><i class="b-ready" style="width:${w(s.ready)}"></i><i class="b-warn" style="width:${w(s.prog)}"></i><i class="b-fix" style="width:${w(s.fix)}"></i>`;
   }
@@ -1504,15 +1549,15 @@ function updateList(){
   const ld=document.getElementById("ldate"); if(ld) ld.textContent=`Rekod bulan ${fmtMonth(state.month)}`;
   const locs=LOCS.filter(l=>l.z===state.zone);
   const info=Object.fromEntries(locs.map(l=>[l.id,{s:status(l.id),c:tally(l.id)}]));
-  const match=(k,x)=>k==="all"||(k==="pend"?x.c.pend>0:k==="prog"?(x.s==="prog"||x.s==="check"):x.s===k);
-  const chips=[["all","Semua"],["fix","Ditolak"],["pend","Belum disemak"],["none","Belum mula"],["prog","Dalam proses"],["ready","Lengkap"],["done","Laporan dicipta"]];
+  const match=(k,x)=>k==="all"||(k==="pend"?x.c.pend>0:k==="prog"?["prog","check","unsent"].includes(x.s):x.s===k);
+  const chips=[["all","Semua"],["fix","Ditolak"],["pend","Belum disemak"],["unsent","Belum dihantar"],["none","Belum mula"],["prog","Dalam proses"],["ready","Lengkap"],...(state.isAdmin?[["done","Laporan dicipta"]]:[])];
   document.getElementById("chips").innerHTML=chips.map(([k,l])=>`<button class="chip${k==="fix"?" c-fix":""}" data-filter="${k}" aria-pressed="${state.filter===k}">${l}<span class="n">${locs.filter(x=>match(k,info[x.id])).length}</span></button>`).join("");
   const q=state.q.trim().toLowerCase();
   const rows=locs.filter(l=>match(state.filter,info[l.id]) && (!q || l.n.toLowerCase().includes(q)));
   document.getElementById("list").innerHTML = rows.length ? rows.map(l=>{
     const {s,c}=info[l.id];
     const extra=c.pend&&state.isAdmin&&s!=="check"?`<span class="row-pend">${c.pend} belum disemak</span>`:"";
-    return `<button class="row" data-loc="${l.id}"><span class="row-main"><div class="row-t">${esc(l.t)}</div><div class="row-s">${esc(l.j)} · ${esc(l.k)}</div></span>
+    return `<button class="row" data-loc="${l.id}"><span class="row-main"><div class="row-t">${esc(l.t)}</div><div class="row-s">${esc(l.j)} · ${esc(l.k)}</div>${sentOf(l.id)?`<div class="row-d">${ICON.send}${sentLine(sentOf(l.id))}</div>`:""}${state.reports[l.id]?.note?.text?`<div class="row-n">Catatan: ${esc(state.reports[l.id].note.text)}</div>`:""}</span>
       <span class="row-side">${pill(s)}${extra}${dots(l.id)}</span></button>`}).join("")
     : `<div class="empty">Tiada lokasi sepadan${q?` dengan “${esc(state.q)}”`:""}.</div>`;
 }
@@ -1522,45 +1567,88 @@ function renderLoc(){
   const r=state.reports[loc.id], st=status(loc.id), ct=tally(loc.id), can=editable(r);
   const tasks=SECTIONS.map((t,i)=>{
     const c=t.slots.filter(s=>photo(r,t.key,s.key)).length, N=t.slots.length, allOk=t.slots.every(s=>check(loc.id,t.key,s.key).st==="ok");
-    const divider=i===TASKS.length?`<div class="extra-h"><b>Gambar tapak</b><span>Tidak dimasukkan dalam laporan LK-1e</span></div>`:"";
+    const divider=i===TASKS.length?`<div class="extra-h"><b>Gambar tapak</b>${state.isAdmin?`<span>Tidak dimasukkan dalam laporan LK-1e</span>`:""}</div>`:"";
     return `${divider}<section class="task${t.report?"":" extra"}"><div class="task-h"><h2>${t.label}</h2><span class="cnt${allOk?" full":""}">${c}/${N} foto</span></div>
-      <div class="tiles${t.wide?" tiles-4":""}">${t.slots.map(s=>tile(loc,r,t,s,can)).join("")}</div></section>`}).join("");
+      <div class="tiles${t.wide?" tiles-4":""}">${t.slots.map(s=>tile(loc,r,t,s,can&&canChange(loc.id,t.key,s.key))).join("")}</div></section>`}).join("");
   const nAll=ct.up, z=state.zipping;
   const rep=reportedAt(r), canMake=ct.ok===ALL_TOTAL&&!!downloads&&!state.making;
-  const need=nAll<ALL_TOTAL?`Muat naik semua ${ALL_TOTAL} foto.`:ct.flag?`Ambil semula ${ct.flag} foto yang ditolak.`:ct.pend?`${ct.pend} foto menunggu semakan admin.`:"Semua foto disahkan.";
-  let foot=rep?`<div class="done-card">${ICON.check}<div><b>Laporan LK-1e dicipta</b><small>${fmtDay(rep)}, ${fmtTime(rep)} · <span data-uid="" data-user="${esc(r.reportUser||r.submittedUser||"")}"></span></small></div></div>`
+  const sn=sentOf(loc.id), sendOk=canSend(ct);
+  const need=nAll<ALL_TOTAL?`Muat naik semua ${ALL_TOTAL} foto, kemudian tekan Hantar.`:ct.flag?`Ambil semula ${ct.flag} foto yang ditolak, kemudian tekan Hantar.`:ct.draft?`Tekan Hantar untuk hantar foto kepada admin.`:ct.pend?`${ct.pend} foto menunggu semakan admin.`:"Semua foto disahkan.";
+  let foot=rep&&state.isAdmin?`<div class="done-card">${ICON.check}<div><b>Laporan LK-1e dicipta</b><small>${fmtStamp(new Date(rep))} · <span data-uid="" data-user="${esc(r.reportUser||r.submittedUser||"")}"></span></small></div></div>`
     :`<div class="submit-note"><span>${need}</span><span class="num" title="disahkan / jumlah">${ct.ok}/${ALL_TOTAL} disahkan</span></div>`;
-  if(state.isAdmin&&ct.pend) foot+=`<button class="btn okb" data-act="apall" ${state.approving?"disabled":""}>${ICON.check}${state.approving?"Mengesahkan…":`Sahkan semua yang belum disemak (${ct.pend})`}</button>`;
+  if(can&&(!state.isAdmin||sendOk)){
+    const lbl=sn?"Hantar semula":"Hantar";
+    foot+=state.sendConfirm&&sendOk&&!state.sending
+      ?`<div class="send-confirm"><b>Hantar ${ct.draft} foto kepada admin?</b><span>Selepas dihantar, foto tidak boleh ditukar kecuali ditolak oleh admin.</span>
+          <div class="send-btns"><button class="btn ghost" data-act="sendno">Batal</button><button class="btn send" data-act="sendyes">${ICON.send}Hantar</button></div></div>`
+      :`<button class="btn send" data-act="send" ${sendOk&&!state.sending?"":"disabled"}>${ICON.send}${state.sending?"Menghantar…":lbl}</button>`;
+  }
   if(state.isAdmin) foot+=`<button class="btn" data-act="mkreport" ${canMake?"":"disabled"}>${state.making?"Mencipta laporan…":rep?"Cipta semula laporan":"Cipta Laporan"}</button>`;
   if(downloads&&state.isAdmin) foot+=`<button class="btn xl" data-act="kzip" ${z||!nAll?"disabled":""}>${ICON.dl}${z?`Memuatkan foto ${z.done}/${z.total}…`:`Muat turun semua foto (${nAll})`}</button>`;
-  const y=window.scrollY;
+  const y=window.scrollY, ae=document.activeElement, keepNote=ae&&ae.id==="k-note"?[ae.selectionStart,ae.selectionEnd]:null; // live updates must not interrupt typing
   scr().innerHTML=`
     <button class="back" data-go="list">${ICON.back} Zon ${loc.z}</button>
     <div class="loc-head">
       <span class="eyebrow">Rekod bulan ${fmtMonth(state.month)}</span>
       <h1>${esc(loc.t)}</h1>
       <div class="loc-sub"><span>${esc(loc.j)}</span><span class="kolam">${esc(loc.k)}</span>${pill(st)}</div>
+      ${sn?`<div class="sentline">${ICON.send}${sentLine(sn,true)}</div>`:""}
       ${ct.flag?`<div class="flagbar">${ICON.flag}<div><b>${ct.flag} foto ditolak oleh admin</b><span>Ambil semula foto bertanda merah. Ketik foto untuk lihat sebab.</span></div></div>`:""}
     </div>
     ${tasks}
+    ${noteBox(loc,r,can)}
     <div class="submit"><div class="submit-in">${foot}</div></div>`;
   window.scrollTo(0,y);
+  if(keepNote){ const ta=document.getElementById("k-note"); if(ta&&!ta.disabled){ ta.focus({preventScroll:true}); try{ta.setSelectionRange(keepNote[0],keepNote[1])}catch{} } }
   bindUploads(scr()); fillNames(); hydrateImgs(scr());
 }
 function tile(loc,r,t,s,can){
   const p=photo(r,t.key,s.key), key=`${loc.id}|${t.key}|${s.key}`, id=`f-${t.key}-${s.key}`, c=check(loc.id,t.key,s.key);
   const mark=!p?`<span class="req" aria-label="wajib">*</span>`:c.st==="ok"?`<span class="tick" aria-label="disahkan">✓</span>`:c.st==="flag"?`<span class="xmark" aria-label="ditolak">✕</span>`:"";
   const lbl=`<span class="slot-l">${s.label}${mark}</span>`;
-  if(state.busy[key]) return `<div class="slot">${lbl}<div class="tile busy"><span class="tile-cta"><span class="spin"></span>Memuat naik</span></div></div>`;
+  if(state.busy[key]) return `<div class="slot">${lbl}<div class="tile busy"><span class="tile-cta"><span class="spin"></span>${state.busy[key]==="del"?"Memadam":"Memuat naik"}</span></div></div>`;
   if(p){
-    const badge=c.st==="ok"?`<span class="tile-rv ok" title="Disahkan">${ICON.check}</span>`:c.st==="flag"?`<span class="tile-rv flag">${ICON.flag}Ditolak</span>`:`<span class="tile-rv pend">Belum semak</span>`;
-    const stateLbl=c.st==="ok"?"disahkan":c.st==="flag"?"ditolak":"belum disemak";
+    const badge=c.st==="ok"?`<span class="tile-rv ok" title="Disahkan">${ICON.check}</span>`:c.st==="flag"?`<span class="tile-rv flag">${ICON.flag}Ditolak</span>`:c.st==="draft"?`<span class="tile-rv draft">Belum hantar</span>`:`<span class="tile-rv pend">Belum semak</span>`;
+    const stateLbl=c.st==="ok"?"disahkan":c.st==="flag"?"ditolak":c.st==="draft"?"belum dihantar":"belum disemak";
     return `<div class="slot">${lbl}<button class="tile filled rv-${c.st}" data-view="${t.key}|${s.key}" aria-label="Lihat foto ${t.label} ${s.label}, ${stateLbl}">
-      <img ${imgSrc(p.asset)} alt="">${p.lat==null?`<span class="tile-flag">Tiada GPS</span>`:""}${badge}<span class="tile-meta">${fmtDay(p.takenAt||p.at)} ${fmtTime(p.takenAt||p.at)} · <span data-uid="${esc(p.by||"")}" data-user="${esc(p.user||"")}"></span></span></button>${c.st==="flag"?`<span class="slot-note">${esc(c.rv.note)}</span>`:""}</div>`;
+      <img ${imgSrc(p.asset)} alt="">${p.lat==null?`<span class="tile-flag">Tiada GPS</span>`:""}${badge}<span class="tile-meta">${fmtDay(p.takenAt||p.at)} · <span data-uid="${esc(p.by||"")}" data-user="${esc(p.user||"")}"></span></span></button>${can?tileActs(t,s):""}${c.st==="flag"?`<span class="slot-note">${esc(c.rv.note)}</span>`:""}</div>`;
   }
   if(!can) return `<div class="slot">${lbl}<div class="tile empty locked"><span class="tile-cta">${ICON.cam}Tiada foto</span></div></div>`;
   return `<div class="slot">${lbl}<label class="tile empty" for="${id}"><input class="vh" type="file" accept="image/*" capture="environment" id="${id}" data-up="${t.key}|${s.key}">
       <span class="tile-cta">${ICON.cam}Ambil foto</span></label></div>`;
+}
+// Catatan: one remark per kolam per month, written by any signed-in user
+const NOTE_MAX=1000;
+const noteKey=locId=>`${state.month}|${locId}`;
+function noteBox(loc,r,can){
+  const n=r?.note, d=state.noteDraft[noteKey(loc.id)], val=d??n?.text??"", dirty=d!=null&&d.trim()!==(n?.text||"");
+  const meta=dirty?`<span class="note-dirty">Belum disimpan</span>`:n?`Disimpan ${fmtStamp(new Date(n.at))} · ${esc(showName(n.user||""))}`:"Belum ada catatan.";
+  return `<section class="task note"><div class="task-h"><h2>Catatan</h2><span class="cnt" id="k-note-cnt">${val.length}/${NOTE_MAX}</span></div>
+      <label class="vh" for="k-note">Catatan pemerhatian di kolam</label>
+      <textarea id="k-note" rows="4" maxlength="${NOTE_MAX}" placeholder="Tulis apa-apa yang diperhatikan di kolam ini. Contoh: pagar rosak, air bertakung, longgokan sampah besar." ${can&&!state.noteSaving?"":"disabled"}>${esc(val)}</textarea>
+      <div class="note-foot"><span class="note-meta" id="k-note-meta">${meta}</span>
+      ${can?`<button class="sbtn solid" data-act="notesave" id="k-note-save" ${dirty&&!state.noteSaving?"":"disabled"}>${state.noteSaving?"Menyimpan…":"Simpan"}</button>`:""}</div></section>`;
+}
+async function saveNote(){
+  const loc=byId[state.locId], month=state.month; if(!loc||state.noteSaving) return;
+  const k=noteKey(loc.id), text=(state.noteDraft[k]??"").trim();
+  state.noteSaving=true; renderLoc();
+  try{
+    const doc=await rpc("set_note",{p_month:month,p_loc:loc.id,p_text:text});
+    if(doc&&state.month===month) state.reports[loc.id]=doc;
+    delete state.noteDraft[k]; toast(text?"Catatan disimpan":"Catatan dipadam");
+  }catch(e){
+    const m=`${e?.code||""} ${e?.message||""}`;
+    toast(/set_note|PGRST202|42883/i.test(m)?"Catatan belum disediakan. Jalankan catatan.sql dalam Supabase.":/1000/.test(m)?`Catatan terlalu panjang (had ${NOTE_MAX} aksara).`:"Catatan tidak dapat disimpan. Semak sambungan dan cuba lagi.",true);
+  }finally{ state.noteSaving=false; refresh(); }
+}
+// Tukar / Padam under each photo (only shown when this user may still change it)
+function tileActs(t,s){
+  const k=`${t.key}|${s.key}`, id=`t-${t.key}-${s.key}`;
+  if(state.delAsk===k) return `<div class="tacts ask" role="group" aria-label="Padam foto ${t.label} ${s.label}?"><span>Padam?</span>
+      <button class="tact danger" data-tdelyes="${k}">Ya</button><button class="tact" data-tdelno="1">Batal</button></div>`;
+  return `<div class="tacts"><label class="tact" for="${id}">${ICON.swap}Tukar<input class="vh" type="file" accept="image/*" capture="environment" id="${id}" data-up="${k}"></label>
+      <button class="tact danger" data-tdel="${k}" aria-label="Padam foto ${t.label} ${s.label}">${ICON.del}Padam</button></div>`;
 }
 async function bindUploads(root){
   // Bound directly so a pick still lands if a live update re-renders the screen while the picker is open
@@ -1577,6 +1665,7 @@ function reviewBox(c){
   const who=rv=>`${esc(showName(rv.reviewer_name||"")||"Admin")} · ${fmtStamp(new Date(rv.at))}`;
   if(c.st==="flag") return `<div class="rv-box flag"><b>${ICON.flag}Ditolak · perlu ambil semula</b><p>${esc(c.rv.note)}</p><small>${who(c.rv)}</small></div>`;
   if(c.st==="ok") return `<div class="rv-box ok"><b>${ICON.check}Disahkan</b><small>${who(c.rv)}</small></div>`;
+  if(c.st==="draft") return `<div class="rv-box pend"><b>Belum dihantar</b><small>${state.isAdmin?"Pekerja belum menekan Hantar. Foto boleh disemak selepas dihantar.":"Tekan Hantar di halaman kolam selepas semua foto dimuat naik."}</small>${c.prev?`<small>Foto sebelum ini ditolak: ${esc(c.prev.note)}</small>`:""}</div>`;
   return `<div class="rv-box pend"><b>Belum disemak oleh admin</b>${c.prev?`<small>Foto sebelum ini ditolak: ${esc(c.prev.note)}</small>`:""}</div>`;
 }
 function viewerActions(c,can){
@@ -1592,7 +1681,7 @@ function viewerActions(c,can){
       <button class="vghost" data-act="flagno" ${dis}>Batal</button>
       <button class="vdanger" data-act="flagyes" id="flag-go" ${v.busy||!(v.note||"").trim()?"disabled":""}>${ICON.flag}${v.busy?"Menyimpan…":"Tolak foto"}</button></div>`;
   const rows=[];
-  if(state.isAdmin){
+  if(state.isAdmin&&c.st!=="draft"){
     const a=[];
     if(c.st!=="ok") a.push(`<button class="vok" data-act="rvok" ${dis}>${ICON.check}${v.busy?"Menyimpan…":"Sahkan"}</button>`);
     if(c.st!=="flag") a.push(`<button class="vdanger" data-act="rvflag" ${dis}>${ICON.flag}Tolak</button>`);
@@ -1628,24 +1717,34 @@ async function downloadPhoto(){
     else toast("Muat turun tidak tersedia di sini.",true);
   }finally{ if(state.viewing===v){v.busy=false;renderViewer()} }
 }
+async function removePhoto(task,stage){
+  const loc=byId[state.locId], r=state.reports[loc.id], p=photo(r,task,stage);
+  if(!p||!editable(r)||!canChange(loc.id,task,stage)) return false;
+  await writePhoto(loc,task,stage,{asset:null,uploads:uploadsOf(r,task,stage)}); // keep the upload count
+  assets.delete(p.asset).catch(()=>{});
+  return true;
+}
 async function deletePhoto(){
-  const v=state.viewing, loc=byId[state.locId], r=state.reports[loc.id], p=photo(r,v.task,v.stage);
-  if(!p||!editable(r)) return;
+  const v=state.viewing; if(!v) return;
   v.busy=true; renderViewer();
-  try{
-    await writePhoto(loc,v.task,v.stage,{asset:null,uploads:uploadsOf(r,v.task,v.stage)}); // keep the upload count
-    assets.delete(p.asset).catch(()=>{});
-    closeViewer(); toast("Foto dipadam");
-  }catch(e){
+  try{ if(await removePhoto(v.task,v.stage)){ closeViewer(); toast("Foto dipadam"); } else { v.busy=false; renderViewer(); } }
+  catch(e){
     if(state.viewing===v){v.busy=false;renderViewer()}
-    toast("Foto tidak dapat dipadam. Cuba lagi.",true);
+    toast(/dihantar/i.test(e?.message||"")?"Foto ini telah dihantar dan tidak boleh dipadam.":"Foto tidak dapat dipadam. Cuba lagi.",true);
   }
+}
+async function deleteFromTile(task,stage){
+  const key=`${state.locId}|${task}|${stage}`; if(state.busy[key]) return;
+  state.delAsk=null; state.busy[key]="del"; renderLoc();
+  try{ if(await removePhoto(task,stage)) toast("Foto dipadam"); }
+  catch(e){ toast(/dihantar/i.test(e?.message||"")?"Foto ini telah dihantar dan tidak boleh dipadam.":"Foto tidak dapat dipadam. Cuba lagi.",true); }
+  finally{ delete state.busy[key]; refresh(); }
 }
 function closeViewer(){state.viewing=null;const v=document.getElementById("viewer");v.hidden=true;v.innerHTML=""}
 function renderViewer(){
   const v=document.getElementById("viewer"), {task,stage}=state.viewing, loc=byId[state.locId];
   const r=state.reports[loc.id], p=photo(r,task,stage); if(!p) return closeViewer();
-  const T=secOf(task), S=slotOf(task,stage), can=editable(r), c=check(loc.id,task,stage);
+  const T=secOf(task), S=slotOf(task,stage), can=editable(r)&&canChange(loc.id,task,stage), c=check(loc.id,task,stage);
   const ae=document.activeElement, keep=ae&&ae.id==="flag-note"?[ae.selectionStart,ae.selectionEnd]:null;  // live updates must not interrupt typing
   v.innerHTML=`<div class="viewer-top"><div><b>${T.label} · ${S.label}</b><span>Muatnaik ${uploadsOf(r,task,stage)} · ${p.takenAt?`Diambil ${fmtStamp(new Date(p.takenAt))}`:`<span class="warn">Tarikh foto tiada</span> · dimuat naik ${fmtStamp(new Date(p.at))}`} · <span data-uid="${esc(p.by||"")}" data-user="${esc(p.user||"")}"></span></span>
       ${p.bytes?`<span>Saiz asal ${fmtBytes(p.bytes)}</span>`:""}
@@ -1660,7 +1759,7 @@ function renderViewer(){
 
 /* ---------- events ---------- */
 document.addEventListener("click",e=>{
-  const t=e.target.closest("[data-zone],[data-go],[data-loc],[data-filter],[data-view],[data-act],[data-auth],[data-admin],[data-reason],[data-xr]"); if(!t) return;
+  const t=e.target.closest("[data-zone],[data-go],[data-loc],[data-filter],[data-view],[data-act],[data-auth],[data-admin],[data-reason],[data-xr],[data-tdel],[data-tdelyes],[data-tdelno]"); if(!t) return;
   const aa=t.dataset.act;
   if(aa==="azip"){ downloadMonthZip(); return; }
   if(aa==="adel"){ state.adminDel={ok:false}; renderAdmin(); return; }
@@ -1674,6 +1773,9 @@ document.addEventListener("click",e=>{
     return; }
   if(t.dataset.auth){ state.authMode=t.dataset.auth; renderAuth(); return; }
   if(t.dataset.act==="logout"){ signOut(); return; }
+  if(t.dataset.tdel){ state.delAsk=t.dataset.tdel; renderLoc(); return; }
+  if(t.dataset.tdelno){ state.delAsk=null; renderLoc(); return; }
+  if(t.dataset.tdelyes){ const [a,b]=t.dataset.tdelyes.split("|"); deleteFromTile(a,b); return; }
   if(t.dataset.reason){ const v=state.viewing; if(!v) return; const cur=(v.note||"").trim(); v.note=cur?(cur.includes(t.dataset.reason)?cur:`${cur}; ${t.dataset.reason}`):t.dataset.reason; renderViewer(); return; }
   if(t.dataset.zone) go("list",{zone:t.dataset.zone,q:"",filter:t.dataset.f||"all"});
   else if(t.dataset.go) go(t.dataset.go,t.dataset.go==="pwchange"?{forced:false}:{});
@@ -1690,7 +1792,10 @@ document.addEventListener("click",e=>{
   else if(t.dataset.act==="mprev"||t.dataset.act==="mnext"){const next=shiftMonth(state.month,t.dataset.act==="mprev"?-1:1);if(next>thisMonth())return;state.month=next;renderMonth();subscribeMonth();refresh();}
   else if(t.dataset.act==="mkreport") createKolamReport();
   else if(t.dataset.act==="kzip") downloadKolamPhotos();
-  else if(t.dataset.act==="apall") approveAllPending();
+  else if(t.dataset.act==="notesave") saveNote();
+  else if(t.dataset.act==="send"){ state.sendConfirm=true; renderLoc(); }
+  else if(t.dataset.act==="sendno"){ state.sendConfirm=false; renderLoc(); }
+  else if(t.dataset.act==="sendyes") sendKolam();
   else if(t.dataset.act==="rvok") reviewCurrent("ok");
   else if(t.dataset.act==="rvflag"){state.viewing.flag=true;state.viewing.note="";renderViewer();setTimeout(()=>document.getElementById("flag-note")?.focus(),0)}
   else if(t.dataset.act==="flagno"){state.viewing.flag=false;renderViewer()}
@@ -1703,6 +1808,12 @@ document.addEventListener("change",e=>{
 });
 document.addEventListener("input",e=>{
   if(e.target.id==="q"){state.q=e.target.value;updateList()}
+  if(e.target.id==="k-note"&&state.locId){
+    const v=e.target.value, saved=state.reports[state.locId]?.note?.text||""; state.noteDraft[noteKey(state.locId)]=v;
+    const dirty=v.trim()!==saved, c=document.getElementById("k-note-cnt"), b=document.getElementById("k-note-save"), m=document.getElementById("k-note-meta");
+    if(c) c.textContent=`${v.length}/${NOTE_MAX}`; if(b) b.disabled=!dirty||state.noteSaving;
+    if(m&&dirty) m.innerHTML=`<span class="note-dirty">Belum disimpan</span>`;
+  }
   if(e.target.id==="flag-note"&&state.viewing){ state.viewing.note=e.target.value; const b=document.getElementById("flag-go"); if(b) b.disabled=state.viewing.busy||!e.target.value.trim(); }
 });
 document.getElementById("viewer").addEventListener("click",e=>{ if(e.target.classList.contains("viewer-img")) closeViewer(); });
