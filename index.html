@@ -77,7 +77,33 @@ h1{font:700 2rem/1.05 var(--f-display);margin:14px 0 4px;text-wrap:balance;lette
 .zone-meta .num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;color:var(--ink)}
 .bar{height:6px;border-radius:3px;background:var(--sunken);overflow:hidden;margin-top:10px;display:flex}
 .bar i{display:block;height:100%}
-.bar .b-ok{background:var(--ok)} .bar .b-warn{background:var(--warn)}
+.bar .b-ok{background:var(--ok)} .bar .b-warn{background:var(--warn)} .bar .b-ready{background:var(--accent)} .bar .b-fix{background:var(--danger)}
+.zalerts{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:6px}
+.za{display:block;font-weight:600;font-size:.85rem}
+.za svg{width:14px;height:14px;vertical-align:-2px;margin-right:4px}
+.za-fix,.za-fix .num{color:var(--danger)!important}
+.za-pend,.za-pend .num{color:var(--accent)!important}
+/* Perlu tindakan */
+.todo{margin-top:18px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.todo:empty{display:none}
+.todo-h{display:flex;align-items:center;gap:8px}
+.todo-h svg{width:18px;height:18px;color:var(--danger)}
+.todo-h h2{font:700 1.2rem/1 var(--f-display);text-transform:uppercase;letter-spacing:.03em;margin:0;flex:1}
+.todo-h .num{font:600 .95rem var(--f-mono);font-variant-numeric:tabular-nums}
+.todo-h.sub{margin-top:8px;padding-top:12px;border-top:1px solid var(--line)}
+.tlist{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.trow{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:10px 12px}
+.trow:last-child{border-bottom:0}
+.trow:hover{background:var(--sunken)}
+.trow-main{display:flex;flex-direction:column;min-width:0}
+.trow-note{color:var(--danger);font-size:.85rem;margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.trow-note b{font-weight:600}
+.tmore{padding:10px 12px;color:var(--muted);font-size:.85rem}
+.qbtns{display:grid;gap:8px}
+.qbtn{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;text-align:left;background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);border-radius:10px;padding:12px 14px}
+.qbtn b{font:700 1.05rem/1 var(--f-display);text-transform:uppercase;letter-spacing:.03em;color:var(--accent)}
+.qbtn .num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-weight:600}
+.qbtn .chev{color:var(--accent)}
 .chev{width:22px;height:22px;color:var(--muted)}
 
 /* Sign-in */
@@ -172,8 +198,18 @@ h1{font:700 2rem/1.05 var(--f-display);margin:14px 0 4px;text-wrap:balance;lette
 .export-ic svg{width:24px;height:24px}
 .export-t{font-weight:600;line-height:1.25}
 .export-s{color:var(--muted);font-size:.88rem}
+.export-left{display:block;color:var(--warn);font-weight:600;margin-top:2px}
+.export-left .num{color:var(--warn)!important}
 .export-s .num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;color:var(--ink)}
 .export .btn{grid-column:1/-1;margin-top:10px}
+.xrange{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin-top:12px}
+.xrange .field{min-width:0}
+.xrange input{-webkit-appearance:none;appearance:none;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 10px;font-size:1rem;width:100%;min-width:0;color:var(--ink)}
+.xrange input:disabled{opacity:.6}
+.xquick{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.xsum{grid-column:1/-1;margin-top:8px;font-size:.88rem;min-height:1.3em}
+.xsum .num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;color:var(--ink)}
+.xerr{color:var(--danger);font-weight:600}
 .export-bar{grid-column:1/-1;height:6px;border-radius:3px;background:var(--sunken);overflow:hidden;margin-top:10px}
 .export-bar i{display:block;height:100%;background:var(--accent);transition:width .2s}
 
@@ -186,6 +222,9 @@ h1{font:700 2rem/1.05 var(--f-display);margin:14px 0 4px;text-wrap:balance;lette
 .chip .n{font-family:var(--f-mono);font-size:.78rem;color:var(--muted);margin-left:4px}
 .chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
 .chip[aria-pressed="true"] .n{color:inherit;opacity:.75}
+.chip.c-fix{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 40%,var(--line))}
+.chip.c-fix[aria-pressed="true"]{background:var(--danger);border-color:var(--danger);color:#fff}
+.row-pend{font:600 .72rem var(--f-mono);color:var(--accent)}
 .list{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
 .row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:12px 14px}
 .row:last-child{border-bottom:0}
@@ -194,10 +233,11 @@ h1{font:700 2rem/1.05 var(--f-display);margin:14px 0 4px;text-wrap:balance;lette
 .row-t{font-weight:600;line-height:1.25}
 .row-s{color:var(--muted);font-size:.88rem;margin-top:2px}
 .row-side{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
-.dots{display:grid;grid-template-columns:repeat(3,8px);gap:3px}
-.dots i{width:8px;height:8px;border-radius:2px;background:var(--sunken);border:1px solid var(--line)}
-.dots i.on{background:var(--accent);border-color:var(--accent)}
-.dots.done i.on{background:var(--ok);border-color:var(--ok)}
+.dots{display:grid;grid-template-columns:repeat(8,6px);gap:2px}
+.dots i{width:6px;height:6px;border-radius:2px;background:var(--sunken);border:1px solid var(--line)}
+.dots i.pend{background:var(--accent);border-color:var(--accent)}
+.dots i.ok{background:var(--ok);border-color:var(--ok)}
+.dots i.flag{background:var(--danger);border-color:var(--danger)}
 .empty{padding:28px 16px;text-align:center;color:var(--muted)}
 
 .pill{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:2px 9px;font:600 .74rem/1.6 var(--f-body);letter-spacing:.02em;white-space:nowrap}
@@ -206,6 +246,9 @@ h1{font:700 2rem/1.05 var(--f-display);margin:14px 0 4px;text-wrap:balance;lette
 .p-prog{background:var(--warn-soft);color:var(--warn)}
 .p-ready{background:var(--accent-soft);color:var(--accent)}
 .p-done{background:var(--ok-soft);color:var(--ok)}
+.p-check{background:var(--accent-soft);color:var(--accent)}
+.p-ready{background:var(--ok-soft);color:var(--ok)}
+.p-fix{background:color-mix(in srgb,var(--danger) 14%,var(--surface));color:var(--danger)}
 
 /* Location page */
 .loc-head{margin:6px 0 18px}
@@ -222,6 +265,20 @@ h1{font:700 2rem/1.05 var(--f-display);margin:14px 0 4px;text-wrap:balance;lette
 .slot-l{font:600 .78rem/1 var(--f-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:6px}
 .slot-l .req{color:var(--danger)}
 .slot-l .tick{color:var(--ok)}
+.slot-l .xmark{color:var(--danger)}
+.slot-note{color:var(--danger);font-size:.78rem;line-height:1.25;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.tile.filled.rv-flag{border:3px solid var(--danger)}
+.tile.filled.rv-ok{border-color:var(--ok)}
+.tile-rv{position:absolute;top:5px;right:5px;display:inline-flex;align-items:center;gap:3px;font:600 .62rem/1 var(--f-mono);letter-spacing:.04em;text-transform:uppercase;padding:4px 5px;border-radius:4px;color:#fff}
+.tile-rv svg{width:11px;height:11px}
+.tile-rv.ok{background:var(--ok);padding:4px;border-radius:50%}
+.tile-rv.ok svg{width:12px;height:12px}
+.tile-rv.flag{background:#c62828}
+.tile-rv.pend{background:rgba(15,28,54,.78)}
+.flagbar{display:flex;gap:10px;align-items:flex-start;margin-top:12px;padding:12px 14px;border-radius:10px;background:color-mix(in srgb,var(--danger) 10%,var(--surface));border:1px solid color-mix(in srgb,var(--danger) 45%,transparent)}
+.flagbar svg{width:20px;height:20px;color:var(--danger);flex:none;margin-top:1px}
+.flagbar b{display:block;color:var(--danger)}
+.flagbar span{font-size:.9rem;color:var(--ink)}
 .tile{position:relative;aspect-ratio:3/4;max-width:100%;width:100%;border-radius:10px;overflow:hidden;display:grid;place-items:center;padding:0}
 .tile.empty{border:2px dashed var(--line);background:var(--surface);color:var(--accent);cursor:pointer;text-align:center;transition:border-color .15s,background .15s}
 .tile.empty:hover{border-color:var(--accent);background:var(--accent-soft)}
@@ -244,12 +301,15 @@ h1{font:700 2rem/1.05 var(--f-display);margin:14px 0 4px;text-wrap:balance;lette
 .submit{position:sticky;bottom:0;margin:8px -16px 0;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));background:var(--bg);border-top:1px solid var(--line)}
 .submit-in{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:8px}
 .submit-note{font-size:.88rem;color:var(--muted);display:flex;justify-content:space-between;gap:10px}
-.submit-note .num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;color:var(--ink)}
+.submit-note .num{white-space:nowrap;font-family:var(--f-mono);font-variant-numeric:tabular-nums;color:var(--ink)}
 .btn{border:0;border-radius:10px;padding:14px 16px;font-weight:600;font-size:1rem;background:var(--accent);color:var(--accent-ink);width:100%}
 .btn:disabled{background:var(--sunken);color:var(--muted);cursor:not-allowed}
 .btn.ghost{background:none;border:1px solid var(--line);color:var(--ink)}
 .btn.xl{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--surface);border:1px solid var(--accent);color:var(--accent)}
 .btn.xl svg{width:18px;height:18px}
+.btn.okb{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--ok);color:#fff}
+.btn.okb svg{width:18px;height:18px}
+.btn.okb:disabled{background:var(--sunken);color:var(--muted)}
 .btn.xl:disabled{border-color:var(--line);color:var(--muted)}
 .done-card{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:10px;background:var(--ok-soft);color:var(--ink)}
 .done-card svg{width:26px;height:26px;color:var(--ok);flex:none}
@@ -275,11 +335,27 @@ h1{font:700 2rem/1.05 var(--f-display);margin:14px 0 4px;text-wrap:balance;lette
 .viewer-top a{display:inline-block;margin-top:3px}
 .viewer-act .vdanger{background:#c62828;color:#fff}
 .viewer-act .vghost{background:rgba(255,255,255,.14);color:#fff}
+.viewer-act .vok{background:#1b7a3d;color:#fff}
+.viewer-act .vretake{background:#ffb300;color:#111}
+.viewer-act + .viewer-act{margin-top:8px}
+.viewer-act.flagform{flex-wrap:wrap}
+.viewer-act.flagform textarea{flex-basis:100%;border-radius:10px;border:0;padding:10px 12px;font:inherit;font-size:16px;resize:none;background:#fff;color:#111}
+.reasons{flex-basis:100%;display:flex;flex-wrap:wrap;gap:6px}
+.viewer-act .reasons .reason{flex:none;background:rgba(255,255,255,.14);color:#fff;border-radius:999px;padding:6px 11px;font-size:.82rem;font-weight:500}
+.rv-box{max-width:560px;width:100%;margin:10px auto 0;padding:10px 12px;border-radius:10px;color:#fff;display:flex;flex-direction:column;gap:3px}
+.rv-box b{display:flex;align-items:center;gap:6px;font-weight:600}
+.rv-box b svg{width:16px;height:16px}
+.rv-box p{margin:0;font-size:.95rem;overflow-wrap:anywhere}
+.rv-box small{font:500 .72rem var(--f-mono);opacity:.85}
+.rv-box.flag{background:#c62828}
+.rv-box.ok{background:rgba(27,122,61,.9)}
+.rv-box.pend{background:rgba(255,255,255,.12)}
 .viewer-act button:disabled{opacity:.6;cursor:default}
 .viewer-confirm{flex-basis:100%;color:#fff;text-align:center;font-weight:600;margin-bottom:2px}
 .viewer-act.confirm{flex-wrap:wrap}
 
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:30;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:.92rem;max-width:calc(100% - 32px);box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.foot{margin-top:28px;padding-top:14px;border-top:1px solid var(--line);text-align:center;color:var(--muted);font-size:.8rem}
 .toast.err{background:var(--danger);color:#fff}
 </style>
 
@@ -300,6 +376,7 @@ h1{font:700 2rem/1.05 var(--f-display);margin:14px 0 4px;text-wrap:balance;lette
   </header>
   <div id="banner"></div>
   <main id="screen"></main>
+  <footer class="foot">Powered by Blu. All rights reserved</footer>
 </div>
 <div id="viewer" class="viewer" hidden role="dialog" aria-modal="true" aria-label="Foto"></div>
 <div id="toast" class="toast" hidden role="status" aria-live="polite"></div>
@@ -468,6 +545,9 @@ const EXTRA = [
 const SECTIONS = [...TASKS.map(t=>({...t,slots:STAGES,report:true})), ...EXTRA];
 const secOf=k=>SECTIONS.find(x=>x.key===k);
 const slotOf=(k,sl)=>secOf(k).slots.find(x=>x.key===sl);
+// Every photo slot on the kolam page; a kolam is only "Lengkap" once all of these have a photo
+const ALL_SLOTS = SECTIONS.flatMap(t=>t.slots.map(s=>[t.key,s.key]));
+const ALL_TOTAL = ALL_SLOTS.length;
 const byId = Object.fromEntries(LOCS.map(l => [l.id, l]));
 // Street name for file and folder names; streets with several ponds get the kolam added
 const STREET_COUNT = LOCS.reduce((m,l)=>(m[l.j.toLowerCase()]=(m[l.j.toLowerCase()]||0)+1,m),{});
@@ -476,6 +556,7 @@ const streetName = l => fileSafe(l.j + (STREET_COUNT[l.j.toLowerCase()]>1 ? " " 
 const SHEET_NAMES = Object.fromEntries(lk1eSheetNames(LOCS).map((n,i)=>[LOCS[i].id,n]));
 
 const ICON = {
+  flag:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4"/><path d="M5 4h12l-2.5 4.5L17 13H5"/></svg>',
   back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>',
   chev:'<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>',
   cam:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.6"/></svg>',
@@ -488,7 +569,7 @@ const ICON = {
   x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>'
 };
 
-const state = { screen:"zones", zone:null, locId:null, month:thisMonth(), reports:{}, loaded:false,
+const state = { screen:"zones", zone:null, locId:null, month:thisMonth(), reports:{}, reviews:{}, reviewErr:false, loaded:false,
   q:"", filter:"all", busy:{}, viewing:null };
 /* ---------- Supabase backend ---------- */
 const SB_URL="https://uarnmgarflkcvoyxwqnh.supabase.co";
@@ -504,6 +585,18 @@ async function loadMonthReports(month){
   const {data,error}=await sb.from("reports").select("loc_id,doc").eq("month",month);
   if(error) throw error;
   const m={}; (data||[]).forEach(row=>{ m[row.loc_id]=row.doc||{}; }); return m;
+}
+// Admin photo checks: one row per photo slot, tied to the exact photo (asset) that was checked
+const RV_COLS="loc_id,task,slot,asset,state,note,reviewer_name,at";
+function putReview(m,row){ ((m[row.loc_id]??={})[row.task]??={})[row.slot]=row; }
+async function loadMonthReviews(month){
+  const {data,error}=await sb.from("photo_reviews").select(RV_COLS).eq("month",month);
+  if(error) throw error;
+  const m={}; (data||[]).forEach(row=>putReview(m,row)); return m;
+}
+async function saveReviews(rows){ // admins only; the database records who checked it and when
+  const {data,error}=await sb.from("photo_reviews").upsert(rows,{onConflict:"month,loc_id,task,slot"}).select(RV_COLS);
+  if(error) throw error; return data||[];
 }
 async function loadProfile(id){
   const {data,error}=await sb.from("profiles").select("id,username,display,role,must_change").eq("id",id).maybeSingle();
@@ -594,12 +687,34 @@ const mapsUrl=p=>`https://www.google.com/maps/search/?api=1&query=${p.lat},${p.l
 function fmtDay(iso){try{return new Date(iso).toLocaleDateString("ms-MY",{day:"numeric",month:"short"})}catch{return""}}
 function renderMonth(){document.getElementById("mname").textContent=fmtMonth(state.month);document.getElementById("mnext").disabled=state.month>=thisMonth()}
 function photo(r,t,s){return r?.photos?.[t]?.[s]?.asset ? r.photos[t][s] : null}
+// How many times this slot has been uploaded this month (photos from before the counter count as 1).
+// A deleted slot keeps its count, so deleting and retaking still counts up.
+function uploadsOf(r,t,s){const e=r?.photos?.[t]?.[s];return Number(e?.uploads)||(e?.asset?1:0)}
 function countPhotos(r){let n=0;for(const t of TASKS)for(const s of STAGES)if(photo(r,t.key,s.key))n++;return n}
 const reportedAt=r=>r?.reportAt||r?.submittedAt||null;
-function status(r){ if(reportedAt(r)) return "done"; const n=countPhotos(r); return n===TOTAL?"ready":n>0?"prog":"none"; }
-const STATUS_LABEL={none:"Belum mula",prog:"Dalam proses",ready:"Lengkap",done:"Laporan dicipta"};
+function countAll(r){let n=0;for(const [t,s] of ALL_SLOTS)if(photo(r,t,s))n++;return n}
+// Admin check of one photo slot: none (no photo), pend (belum disemak), ok (disahkan), flag (ditolak)
+function check(locId,t,s){
+  const p=photo(state.reports[locId],t,s); if(!p) return {st:"none"};
+  const rv=state.reviews[locId]?.[t]?.[s];
+  if(rv&&rv.asset===p.asset) return {st:rv.state==="flag"?"flag":"ok",rv,p};
+  return {st:"pend",p,prev:rv&&rv.state==="flag"?rv:null}; // a retaken photo needs checking again
+}
+function tally(locId){ const c={up:0,ok:0,flag:0,pend:0}; for(const [t,s] of ALL_SLOTS){ const x=check(locId,t,s).st; if(x!=="none"){c.up++;c[x]++;} } return c; }
+function status(locId){
+  const r=state.reports[locId], c=tally(locId);
+  if(c.flag) return "fix";
+  if(reportedAt(r)) return "done";
+  if(c.ok===ALL_TOTAL) return "ready";
+  if(c.up===ALL_TOTAL) return "check";
+  return c.up?"prog":"none";
+}
+const STATUS_LABEL={none:"Belum mula",prog:"Dalam proses",check:"Menunggu semakan",fix:"Perlu ambil semula",ready:"Lengkap",done:"Laporan dicipta"};
+const nextPending=(locId,t,s)=>{ const i=ALL_SLOTS.findIndex(([a,b])=>a===t&&b===s);
+  for(let k=1;k<=ALL_SLOTS.length;k++){ const [a,b]=ALL_SLOTS[(i+k)%ALL_SLOTS.length]; if(check(locId,a,b).st==="pend") return [a,b]; } return null; };
+const reviewErrMsg=e=>/photo_reviews|42P01|PGRST20/i.test(`${e?.code||""} ${e?.message||""}`)?"Semakan foto belum disediakan. Jalankan photo_reviews.sql dalam Supabase.":/row-level|42501|permission/i.test(e?.message||"")?"Hanya admin boleh menyemak foto.":"Tidak dapat disimpan. Semak sambungan dan cuba lagi.";
 function pill(st){return `<span class="pill p-${st}">${STATUS_LABEL[st]}</span>`}
-function dots(r){const done=reportedAt(r)?" done":"";let h=`<span class="dots${done}" aria-hidden="true">`;for(const t of TASKS)for(const s of STAGES)h+=`<i class="${photo(r,t.key,s.key)?"on":""}"></i>`;return h+"</span>"}
+function dots(locId){let h=`<span class="dots" aria-hidden="true">`;for(const [t,s] of ALL_SLOTS){const x=check(locId,t,s).st;h+=`<i class="${x==="none"?"":x}"></i>`}return h+"</span>"}
 let toastT;
 function toast(msg,err){const el=document.getElementById("toast");el.textContent=msg;el.className="toast"+(err?" err":"");el.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>el.hidden=true,err?5200:2600)}
 const editable = r => !!(sb && state.me);
@@ -607,10 +722,14 @@ const editable = r => !!(sb && state.me);
 /* ---------- data ---------- */
 function subscribeMonth(){
   if(unsub){unsub();unsub=null}
-  state.reports={}; state.loaded=false;
+  state.reports={}; state.reviews={}; state.loaded=false;
   if(!sb||!state.me) return;
   const month=state.month;
-  const load=async()=>{ try{ const m=await loadMonthReports(month); if(state.month!==month) return; state.reports=m; state.loaded=true; refresh(); }catch(e){} };
+  const load=async()=>{ try{
+    const [m,rv]=await Promise.all([loadMonthReports(month),loadMonthReviews(month).catch(e=>({__err:e}))]);
+    if(state.month!==month) return;
+    state.reports=m; state.reviewErr=!!rv.__err; if(!rv.__err) state.reviews=rv; state.loaded=true; refresh();
+  }catch(e){} };
   load();
   let ch=null;
   try{
@@ -619,6 +738,12 @@ function subscribeMonth(){
         if(state.month!==month) return;
         if(p.eventType==="DELETE"){ if(p.old?.loc_id) delete state.reports[p.old.loc_id]; else return load(); }
         else if(p.new?.loc_id) state.reports[p.new.loc_id]=p.new.doc||{};
+        refresh();
+      })
+      .on("postgres_changes",{event:"*",schema:"public",table:"photo_reviews",filter:`month=eq.${month}`},p=>{
+        if(state.month!==month) return;
+        if(p.eventType==="DELETE"){ const o=p.old; if(o?.loc_id&&o.task&&o.slot&&state.reviews[o.loc_id]?.[o.task]) delete state.reviews[o.loc_id][o.task][o.slot]; else return load(); }
+        else if(p.new?.loc_id) putReview(state.reviews,p.new);
         refresh();
       }).subscribe();
   }catch{}
@@ -647,7 +772,7 @@ async function stampImage(file,loc,taskLabel,stageLabel,meta){
     const lines=[
       loc.n,
       `${taskLabel.toUpperCase()} · ${stageLabel.toUpperCase()}`,
-      `Tarikh (masa telefon): ${fmtStamp(new Date(meta.takenAt))}`,
+      `Tarikh (masa telefon): ${fmtStamp(new Date(meta.takenAt))} · Muatnaik ${meta.uploads}`,
       meta.lat!=null ? `GPS (${gpsLabel(meta.gpsSource)}): ${meta.lat.toFixed(6)}, ${meta.lng.toFixed(6)}${meta.gpsAcc?` ±${meta.gpsAcc} m`:""}` : `GPS: tiada (lokasi telefon tidak dibenarkan, foto tiada GPS)`
     ];
     const bh=pad*2+lh*lines.length;
@@ -668,17 +793,18 @@ async function handleUpload(task,stage,file){
   if(!file.type.startsWith("image/")){toast("Sila pilih fail gambar.",true);return}
   const key=`${loc.id}|${task}|${stage}`; if(state.busy[key]) return;
   const prev=photo(state.reports[loc.id],task,stage)?.asset;
+  const uploads=uploadsOf(state.reports[loc.id],task,stage)+1;
   const T=secOf(task), S=slotOf(task,stage);
   state.busy[key]=true; closeViewer(); refresh();
   try{
     const now=new Date();   // date/time comes from the phone's own clock at upload
     const [meta,live]=await Promise.all([readMeta(file),currentPosition()]);
-    meta.exifAt=meta.takenAt; meta.takenAt=now.toISOString();
+    meta.exifAt=meta.takenAt; meta.takenAt=now.toISOString(); meta.uploads=uploads;
     if(live){ meta.lat=live.lat; meta.lng=live.lng; meta.gpsSource="telefon"; meta.gpsAcc=live.acc; }
     else if(meta.lat!=null){ meta.gpsSource="foto"; meta.gpsAcc=null; }
     const blob=await stampImage(file,loc,T.label,S.label,meta);
     const res=await assets.upload(blob,{path:`${state.month}/${loc.id}/${task}-${stage}-${Date.now()}.jpg`});
-    await writePhoto(loc,task,stage,{asset:res.id,by:uid,user:state.me?.username||null,at:new Date().toISOString(),takenAt:meta.takenAt,exifAt:meta.exifAt||null,dateSource:"telefon",lat:meta.lat,lng:meta.lng,gpsSource:meta.gpsSource||null,gpsAcc:meta.gpsAcc??null,width:meta.width,height:meta.height,bytes:meta.bytes});
+    await writePhoto(loc,task,stage,{asset:res.id,uploads,by:uid,user:state.me?.username||null,at:new Date().toISOString(),takenAt:meta.takenAt,exifAt:meta.exifAt||null,dateSource:"telefon",lat:meta.lat,lng:meta.lng,gpsSource:meta.gpsSource||null,gpsAcc:meta.gpsAcc??null,width:meta.width,height:meta.height,bytes:meta.bytes});
     if(prev && prev!==res.id) assets.delete(prev).catch(()=>{});
     const noGps=meta.lat==null;
     if(noGps) toast("Disimpan, tetapi lokasi GPS tidak dapat dibaca. Benarkan akses lokasi untuk aplikasi ini dalam pelayar.",true);
@@ -690,10 +816,44 @@ async function handleUpload(task,stage,file){
   }finally{ delete state.busy[key]; refresh(); }
 }
 
+/* ---------- admin photo checks ---------- */
+async function reviewPhotos(locId,items,st,note){ // items: [[task,slot,asset]]
+  const month=state.month;
+  const rows=await saveReviews(items.map(([task,slot,asset])=>({month,loc_id:locId,task,slot,asset,state:st,note:st==="flag"?note:null})));
+  if(state.month===month) rows.forEach(r=>putReview(state.reviews,r));
+  state.reviewErr=false; refresh();
+}
+async function reviewCurrent(st){
+  const v=state.viewing, loc=byId[state.locId]; if(!v||!loc||!state.isAdmin) return;
+  const c=check(loc.id,v.task,v.stage); if(!c.p) return;
+  const note=(v.note||"").trim();
+  if(st==="flag"&&!note){ toast("Tulis sebab foto ditolak.",true); return; }
+  v.busy=true; renderViewer();
+  try{
+    await reviewPhotos(loc.id,[[v.task,v.stage,c.p.asset]],st,note);
+    const nx=nextPending(loc.id,v.task,v.stage);
+    toast(`${st==="ok"?"Foto disahkan":"Foto ditolak. Pekerja perlu ambil semula."}${nx?" · Foto seterusnya":""}`);
+    if(state.viewing===v){ if(nx) openViewer(nx[0],nx[1]); else closeViewer(); }
+  }catch(e){
+    toast(reviewErrMsg(e),true);
+    if(state.viewing===v){ v.busy=false; renderViewer(); }
+  }
+}
+async function approveAllPending(){
+  const loc=byId[state.locId]; if(!state.isAdmin||!loc||state.approving) return;
+  const items=ALL_SLOTS.map(([t,s])=>[t,s,check(loc.id,t,s)]).filter(x=>x[2].st==="pend").map(([t,s,c])=>[t,s,c.p.asset]);
+  if(!items.length) return;
+  state.approving=true; renderLoc();
+  try{ await reviewPhotos(loc.id,items,"ok"); toast(`${items.length} foto disahkan`); }
+  catch(e){ toast(reviewErrMsg(e),true); }
+  finally{ state.approving=false; refresh(); }
+}
+
 /* ---------- per-kolam LK-1e report ---------- */
 async function createKolamReport(){
   if(state.making) return;
   if(!state.isAdmin) return; // reports are admin only
+  if(tally(state.locId).ok!==ALL_TOTAL){ toast(`Semua ${ALL_TOTAL} foto perlu disahkan dahulu.`,true); return; }
   if(!downloads||!window.JSZip){ toast("Muat turun laporan tidak tersedia di sini.",true); return; }
   const loc=byId[state.locId], month=state.month, r=state.reports[loc.id];
   state.making=true; renderLoc();
@@ -748,19 +908,101 @@ async function downloadKolamPhotos(){
 
 /* ---------- monthly Excel (LK-1e) ---------- */
 state.export=null; // {done,total,phase}
-function exportJobs(){
-  return LOCS.filter(l=>countPhotos(state.reports[l.id])>0);
+/* LK-1e for a date range: only admin-approved (Sahkan) Sebelum/Semasa/Selepas photos whose
+   phone date falls inside the range, from whichever monthly records the range covers. */
+const BLN3=["Jan","Feb","Mac","Apr","Mei","Jun","Jul","Ogo","Sep","Okt","Nov","Dis"];
+const ymd=d=>`${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`;
+const dmy=s=>{const [y,m,d]=s.split("-");return `${d}/${m}/${y}`};
+const photoDay=p=>{try{return ymd(new Date(p.takenAt||p.at))}catch{return ""}};
+function monthRange(m){const [y,mo]=m.split("-").map(Number);const last=ymd(new Date(y,mo,0)), today=ymd(new Date());return {from:`${m}-01`,to:last<today?last:today}}
+function monthsBetween(from,to){const out=[];let m=from.slice(0,7);const end=to.slice(0,7);while(m<=end&&out.length<120){out.push(m);m=shiftMonth(m,1)}return out}
+function syncRange(){ // follow the month picker until the admin picks their own dates
+  const r=state.range;
+  if(!r||(!r.touched&&r.forMonth!==state.month)) state.range={...monthRange(state.month),forMonth:state.month,touched:false};
+  return state.range;
+}
+state.rcache={}; // month -> {reports,reviews,at}
+async function monthData(m,fresh){
+  if(m===state.month&&state.loaded&&!state.reviewErr) return {reports:state.reports,reviews:state.reviews};
+  const c=state.rcache[m]; if(c&&!fresh&&Date.now()-c.at<120000) return c;
+  const [reports,reviews]=await Promise.all([loadMonthReports(m),loadMonthReviews(m)]);
+  return state.rcache[m]={reports,reviews,at:Date.now()};
+}
+function rangePlan(from,to,data){ // data: {month:{reports,reviews}}
+  const months=Object.keys(data).sort(), out=[]; let left=0, photos=0;
+  for(const m of months){
+    const {reports,reviews}=data[m];
+    for(const l of LOCS){
+      const r=reports[l.id]; if(!r?.photos) continue;
+      const forms=TASKS.map(t=>({jenis:t.label.toUpperCase(),photos:[null,null,null]})); let n=0;
+      TASKS.forEach((t,ti)=>STAGES.forEach((st,si)=>{
+        const p=photo(r,t.key,st.key); if(!p) return;
+        const d=photoDay(p); if(!d||d<from||d>to) return;
+        const rv=reviews[l.id]?.[t.key]?.[st.key];
+        if(rv&&rv.asset===p.asset&&rv.state==="ok"){ forms[ti].photos[si]=p.asset; n++; } else left++;
+      }));
+      if(n){ out.push({m,l,forms}); photos+=n; }
+    }
+  }
+  return {sheets:out,photos,left,locs:new Set(out.map(x=>x.l.id)).size,multi:new Set(out.map(x=>x.m)).size>1};
+}
+function sheetNamesFor(plan){
+  const used=new Set();
+  return plan.sheets.map(({m,l})=>{
+    const base=SHEET_NAMES[l.id], sfx=plan.multi?` ${BLN3[+m.slice(5)-1]}${m.slice(2,4)}`:"";
+    let name=base.slice(0,31-sfx.length).trim()+sfx, b=name, i=2;
+    while(used.has(name.toLowerCase())){ const x=` (${i++})`; name=b.slice(0,31-x.length).trim()+x; }
+    used.add(name.toLowerCase()); return name;
+  });
+}
+let rangeSeq=0;
+async function refreshRangePlan(){
+  const r=syncRange(), seq=++rangeSeq;
+  if(!r.from||!r.to||r.from>r.to){ state.rplan={err:!r.from||!r.to?"Pilih tarikh mula dan tarikh akhir.":"Tarikh mula mesti sebelum tarikh akhir."}; return renderExport(); }
+  const months=monthsBetween(r.from,r.to);
+  if(months.length>24){ state.rplan={err:"Julat terlalu panjang. Pilih paling lama 24 bulan."}; return renderExport(); }
+  state.rplan={loading:true}; renderExport();
+  try{
+    const data={}; for(const m of months) data[m]=await monthData(m);
+    if(seq!==rangeSeq) return;
+    state.rplan={key:`${r.from}|${r.to}`,...rangePlan(r.from,r.to,data)};
+  }catch(e){ if(seq===rangeSeq) state.rplan={err:"Data tidak dapat dimuatkan. Semak sambungan."}; }
+  if(seq===rangeSeq) renderExport();
 }
 function renderExport(){
   const el=document.getElementById("export"); if(!el) return;
   if(!ready||!db||!downloads||!state.isAdmin){el.hidden=true;return}
-  const jobs=exportJobs(), nPhotos=jobs.reduce((a,l)=>a+countPhotos(state.reports[l.id]),0), x=state.export;
+  const r=syncRange(), x=state.export, today=ymd(new Date());
   el.hidden=false;
-  el.innerHTML=`<span class="export-ic">${ICON.xls}</span>
-    <span class="export-t">Laporan LK-1e · ${fmtMonth(state.month)}</span>
-    <span class="export-s">${jobs.length?`<span class="num">${jobs.length}</span> lokasi · <span class="num">${nPhotos}</span> foto. Satu sheet bagi setiap jalan.`:"Belum ada foto untuk bulan ini."}</span>
-    ${x?`<div class="export-bar" aria-hidden="true"><i style="width:${x.total?Math.round(x.done/x.total*100):0}%"></i></div>`:""}
-    <button class="btn" data-act="xlsx" ${x||!jobs.length?"disabled":""}>${x?(x.phase==="build"?"Membina fail Excel…":`Memuatkan foto ${x.done}/${x.total}…`):"Muat turun Laporan"}</button>`;
+  if(!document.getElementById("x-from")){ // built once so the date pickers are not reset by live updates
+    el.innerHTML=`<span class="export-ic">${ICON.xls}</span>
+      <span class="export-t">Muat turun Laporan LK-1e</span>
+      <span class="export-s">Foto Sebelum, Semasa dan Selepas yang telah disahkan, mengikut tarikh foto diambil.</span>
+      <div class="xrange">
+        <label class="field"><span>Dari</span><input type="date" id="x-from" max="${today}"></label>
+        <label class="field"><span>Hingga</span><input type="date" id="x-to" max="${today}"></label>
+      </div>
+      <div class="xquick" id="x-quick"></div>
+      <div class="xsum" id="x-sum" aria-live="polite"></div>
+      <div class="export-bar" id="x-bar" hidden aria-hidden="true"><i></i></div>
+      <button class="btn" data-act="xlsx" id="x-btn">Muat turun Laporan</button>`;
+  }
+  const f=document.getElementById("x-from"), t=document.getElementById("x-to");
+  if(document.activeElement!==f) f.value=r.from; if(document.activeElement!==t) t.value=r.to;
+  f.max=t.max=today; f.disabled=t.disabled=!!x;
+  const mr=monthRange(state.month), prev=monthRange(shiftMonth(state.month,-1));
+  document.getElementById("x-quick").innerHTML=[["m",`${fmtMonth(state.month)}`,mr],["p",`${fmtMonth(shiftMonth(state.month,-1))}`,prev]]
+    .map(([k,l,v])=>`<button class="chip" data-xr="${v.from}|${v.to}" aria-pressed="${r.from===v.from&&r.to===v.to}" ${x?"disabled":""}>${l}</button>`).join("");
+  const pl=state.rplan, key=`${r.from}|${r.to}`;
+  if(!pl||(!pl.err&&!pl.loading&&pl.key!==key)){ if(!pl||!pl.loading) setTimeout(refreshRangePlan,0); }
+  const sum=document.getElementById("x-sum");
+  sum.innerHTML=pl?.err?`<span class="xerr">${pl.err}</span>`:!pl||pl.loading||pl.key!==key?`<span class="muted">Mengira foto…</span>`
+    :pl.sheets.length?`<span class="muted"><span class="num">${pl.locs}</span> lokasi · <span class="num">${pl.photos}</span> foto disahkan${pl.multi?` · <span class="num">${pl.sheets.length}</span> sheet (satu bagi setiap jalan, setiap bulan)`:""}</span>${pl.left?`<span class="export-left"><span class="num">${pl.left}</span> foto dalam julat ini belum disahkan dan tidak dimasukkan.</span>`:""}`
+    :`<span class="muted">Tiada foto disahkan antara ${dmy(r.from)} dan ${dmy(r.to)}.</span>${pl.left?`<span class="export-left"><span class="num">${pl.left}</span> foto dalam julat ini belum disahkan.</span>`:""}`;
+  const bar=document.getElementById("x-bar"); bar.hidden=!x; if(x) bar.firstElementChild.style.width=`${x.total?Math.round(x.done/x.total*100):0}%`;
+  const btn=document.getElementById("x-btn"), can=!x&&pl&&!pl.err&&!pl.loading&&pl.key===key&&pl.sheets.length;
+  btn.disabled=!can;
+  btn.textContent=x?(x.phase==="load"?"Memuatkan rekod…":x.phase==="build"?"Membina fail Excel…":`Memuatkan foto ${x.done}/${x.total}…`):`Muat turun Laporan (${dmy(r.from)} – ${dmy(r.to)})`;
 }
 async function excelPhoto(id){
   const bm=await createImageBitmap(await fetchPhoto(id));
@@ -770,16 +1012,20 @@ async function excelPhoto(id){
   const blob=await new Promise((ok,no)=>c.toBlob(b=>b?ok(b):no({code:"encode"}),"image/jpeg",0.75));
   return {bytes:new Uint8Array(await blob.arrayBuffer()),w,h};
 }
-async function exportMonth(){
+async function exportRange(){
   if(state.export||!state.isAdmin) return;
   if(!window.JSZip){toast("Komponen Excel gagal dimuatkan. Muat semula halaman.",true);return}
-  const month=state.month, jobs=exportJobs(), reports=state.reports;
-  const tasks=[]; // [locIdx, taskIdx, stageIdx, assetId]
-  jobs.forEach((l,i)=>TASKS.forEach((t,ti)=>STAGES.forEach((st,si)=>{const p=photo(reports[l.id],t.key,st.key); if(p) tasks.push([i,ti,si,p.asset]);})));
-  state.export={done:0,total:tasks.length,phase:"fetch"}; renderExport();
+  const {from,to}=syncRange(); if(!from||!to||from>to) return;
+  state.export={done:0,total:0,phase:"load"}; renderExport();
   try{
-    const sheets=jobs.map(l=>({name:SHEET_NAMES[l.id],lokasi:`${l.t}\n${l.j}\n${l.k}`,
+    const data={}; for(const m of monthsBetween(from,to)) data[m]=await monthData(m,true); // fresh copy of every month
+    const plan=rangePlan(from,to,data);
+    if(!plan.sheets.length){ toast("Tiada foto disahkan dalam julat tarikh ini.",true); return; }
+    const names=sheetNamesFor(plan);
+    const sheets=plan.sheets.map(({m,l},i)=>({name:names[i],lokasi:`${l.t}\n${l.j}\n${l.k}${plan.multi?`\n(${fmtMonth(m)})`:""}`,
       forms:TASKS.map(t=>({jenis:t.label.toUpperCase(),photos:[null,null,null]}))}));
+    const tasks=[]; plan.sheets.forEach((sh,i)=>sh.forms.forEach((f,ti)=>f.photos.forEach((id,si)=>{ if(id) tasks.push([i,ti,si,id]); })));
+    Object.assign(state.export,{total:tasks.length,phase:"fetch"}); renderExport();
     let next=0;
     const worker=async()=>{ while(next<tasks.length){ const [i,ti,si,id]=tasks[next++];
       sheets[i].forms[ti].photos[si]=await excelPhoto(id); state.export.done++; renderExport(); } };
@@ -787,7 +1033,9 @@ async function exportMonth(){
     state.export.phase="build"; renderExport();
     const tpl=Uint8Array.from(atob(LK1E_TPL),c=>c.charCodeAt(0));
     const bytes=await buildLK1eMonth(JSZip,tpl,sheets);
-    await downloads.save({filename:`LK-1e Kolam Takungan - ${fmtMonth(month)}.xlsx`,data:new Blob([bytes])});
+    const whole=Object.keys(data).length===1&&from===`${from.slice(0,7)}-01`&&to===ymd(new Date(+from.slice(0,4),+from.slice(5,7),0));
+    const label=whole?fmtMonth(from.slice(0,7)):`${dmy(from).replace(/\//g,".")} hingga ${dmy(to).replace(/\//g,".")}`;
+    await downloads.save({filename:`LK-1e Kolam Takungan - ${label}.xlsx`,data:new Blob([bytes])});
     toast("Excel dimuat turun");
   }catch(e){
     const c=e?.code;
@@ -796,7 +1044,7 @@ async function exportMonth(){
     else if(c==="extension_not_enabled"||c==="rejected_extension") toast("Muat turun fail Excel tidak dibenarkan di sini.",true);
     else if(c==="fetch") toast("Sebahagian foto tidak dapat dimuatkan. Semak sambungan dan cuba lagi.",true);
     else toast("Excel tidak dapat disediakan. Cuba lagi.",true);
-  }finally{ state.export=null; renderExport(); }
+  }finally{ state.export=null; state.rplan=null; renderExport(); }
 }
 
 /* ---------- sign-in ---------- */
@@ -964,6 +1212,7 @@ async function deleteMonth(){
       state.adminJob.done=Math.min(paths.length,i+50); renderAdmin();
     }
     if(docs.length){ const {error}=await sb.from("reports").delete().eq("month",m); if(error) failed++; }
+    try{ await sb.from("photo_reviews").delete().eq("month",m); }catch{}
     toast(failed?`Selesai dengan ${failed} rekod gagal dipadam. Cuba lagi.`:`Semua foto ${fmtMonth(m)} telah dipadam`,!!failed);
   }finally{ state.adminJob=null; state.adminDel=null; await loadAdminMonth(); loadStorage(); }
 }
@@ -1099,7 +1348,7 @@ function signOut(){
   state.me=null; state.isAdmin=false; saveSession(null);
   if(unsubUsers){ unsubUsers(); unsubUsers=null; } usersMap={};
   if(sb) sb.auth.signOut().catch(()=>{});
-  if(unsub){unsub();unsub=null} state.reports={};
+  if(unsub){unsub();unsub=null} state.reports={}; state.reviews={};
   go("auth",{authMode:"login"});
 }
 function renderAuth(){
@@ -1163,7 +1412,7 @@ function go(screen,opts={}){
 function refresh(){
   renderBanner();
   if(state.screen==="auth"){ const b=document.getElementById("a-go"); if(b && !b.textContent.endsWith("…")) b.disabled=!(ready&&db); }
-  if(state.screen==="zones") updateZones();
+  if(state.screen==="zones"){ if(state.rplan&&!state.rplan.loading&&!state.export) state.rplan=null; updateZones(); }
   if(state.screen==="list") updateList();
   if(state.screen==="loc") renderLoc();
   if(state.viewing) renderViewer();
@@ -1172,13 +1421,18 @@ function renderBanner(){
   const b=document.getElementById("banner");
   if(!ready){b.innerHTML="";return}
   if(!sb) b.innerHTML=`<div class="banner"><b>Tidak dapat menyambung ke pelayan.</b> Semak sambungan internet dan muat semula halaman.</div>`;
+  else if(state.reviewErr&&state.isAdmin&&state.screen!=="auth") b.innerHTML=`<div class="banner"><b>Semakan foto belum disediakan.</b> Jalankan skrip photo_reviews.sql dalam Supabase (SQL Editor), kemudian muat semula.</div>`;
   else b.innerHTML="";
 }
 
 function zoneStats(z){
-  const locs=LOCS.filter(l=>l.z===z); let done=0,prog=0;
-  for(const l of locs){const st=status(state.reports[l.id]); if(st==="done")done++; else if(st!=="none")prog++;}
-  return {total:locs.length,done,prog};
+  const locs=LOCS.filter(l=>l.z===z), s={total:locs.length,done:0,ready:0,prog:0,fix:0,pend:0,pendLoc:0,flag:0};
+  for(const l of locs){
+    const st=status(l.id), c=tally(l.id);
+    if(st==="done")s.done++; else if(st==="ready")s.ready++; else if(st==="fix")s.fix++; else if(st!=="none")s.prog++;
+    s.flag+=c.flag; s.pend+=c.pend; if(c.pend)s.pendLoc++;
+  }
+  return s;
 }
 function renderZones(){
   scr().innerHTML=`
@@ -1194,6 +1448,7 @@ function renderZones(){
         ${ICON.chev}
       </button>`).join("")}
     </div>
+    <section class="todo" id="todo"></section>
     <section class="export" id="export" hidden></section>`;
   document.getElementById("me-name").textContent=state.me?`${state.me.display} · ${state.me.role==="admin"?"Admin":"Pekerja"}`:"";
   updateZones();
@@ -1202,10 +1457,36 @@ function updateZones(){
   const zd=document.getElementById("zdate"); if(zd) zd.textContent=`Rekod bulan ${fmtMonth(state.month)}`;
   for(const z of ["A","B"]){
     const s=zoneStats(z), m=document.getElementById("zm-"+z), b=document.getElementById("zb-"+z); if(!m) continue;
-    m.innerHTML=`<span class="num">${s.total}</span> kolam · <span class="num">${s.done}</span> laporan dicipta · <span class="num">${s.prog}</span> dalam proses`;
-    b.innerHTML=`<i class="b-ok" style="width:${s.done/s.total*100}%"></i><i class="b-warn" style="width:${s.prog/s.total*100}%"></i>`;
+    const alerts=[s.fix?`<span class="za za-fix">${ICON.flag}<span class="num">${s.fix}</span> kolam perlu ambil semula</span>`:"",
+      s.pend?`<span class="za za-pend"><span class="num">${s.pend}</span> foto belum disemak</span>`:""].join("");
+    m.innerHTML=`<span class="num">${s.total}</span> kolam · <span class="num">${s.done}</span> laporan dicipta · <span class="num">${s.ready}</span> lengkap · <span class="num">${s.prog}</span> dalam proses${alerts?`<span class="zalerts">${alerts}</span>`:""}`;
+    const w=n=>`${n/s.total*100}%`;
+    b.innerHTML=`<i class="b-ok" style="width:${w(s.done)}"></i><i class="b-ready" style="width:${w(s.ready)}"></i><i class="b-warn" style="width:${w(s.prog)}"></i><i class="b-fix" style="width:${w(s.fix)}"></i>`;
   }
+  renderTodo();
   renderExport();
+}
+// "Perlu tindakan": rejected photos for everyone, the review queue for admins
+function renderTodo(){
+  const el=document.getElementById("todo"); if(!el) return;
+  if(!state.loaded){ el.innerHTML=""; return; }
+  const flagged=LOCS.map(l=>({l,c:tally(l.id)})).filter(x=>x.c.flag);
+  const MAX=25;
+  const firstNote=l=>{ for(const [t,s] of ALL_SLOTS){ const c=check(l.id,t,s); if(c.st==="flag") return [`${secOf(t).label} · ${slotOf(t,s).label}`,c.rv.note]; } return null; };
+  const flagRows=flagged.slice(0,MAX).map(({l,c})=>`<button class="trow" data-loc="${l.id}" data-z="${l.z}">
+      <span class="trow-main"><span class="row-t">${esc(l.t)}</span><span class="row-s">Zon ${l.z} · ${esc(l.j)} · ${esc(l.k)}</span>${(n=>n?`<span class="trow-note"><b>${esc(n[0])}:</b> ${esc(n[1])}</span>`:"")(firstNote(l))}</span>
+      <span class="pill p-fix">${c.flag} ditolak</span></button>`).join("");
+  let html=`<div class="todo-h">${ICON.flag}<h2>Foto ditolak</h2><span class="num">${flagged.reduce((a,x)=>a+x.c.flag,0)}</span></div>`;
+  html+=flagged.length?`<div class="tlist">${flagRows}${flagged.length>MAX?`<div class="tmore">+${flagged.length-MAX} kolam lagi. Buka zon dan pilih “Ditolak”.</div>`:""}</div>`
+    :`<div class="okline">✓ Tiada foto ditolak bulan ini.</div>`;
+  if(state.isAdmin){
+    const q=["A","B"].map(z=>({z,...zoneStats(z)}));
+    const total=q.reduce((a,x)=>a+x.pend,0);
+    html+=`<div class="todo-h sub"><h2>Menunggu semakan admin</h2><span class="num">${total}</span></div>`;
+    html+=total?`<div class="qbtns">${q.filter(x=>x.pend).map(x=>`<button class="qbtn" data-zone="${x.z}" data-f="pend"><b>Zon ${x.z}</b><span><span class="num">${x.pend}</span> foto · <span class="num">${x.pendLoc}</span> kolam</span>${ICON.chev}</button>`).join("")}</div>`
+      :`<div class="okline">✓ Semua foto yang dimuat naik sudah disemak.</div>`;
+  }
+  el.innerHTML=html;
 }
 
 function renderListShell(){
@@ -1222,36 +1503,35 @@ function renderListShell(){
 function updateList(){
   const ld=document.getElementById("ldate"); if(ld) ld.textContent=`Rekod bulan ${fmtMonth(state.month)}`;
   const locs=LOCS.filter(l=>l.z===state.zone);
-  const counts={all:locs.length,none:0,prog:0,done:0};
-  const st=Object.fromEntries(locs.map(l=>{const s=status(state.reports[l.id]);counts[s==="ready"?"prog":s]++;return [l.id,s]}));
-  const chips=[["all","Semua"],["none","Belum mula"],["prog","Dalam proses"],["done","Laporan dicipta"]];
-  document.getElementById("chips").innerHTML=chips.map(([k,l])=>`<button class="chip" data-filter="${k}" aria-pressed="${state.filter===k}">${l}<span class="n">${counts[k]}</span></button>`).join("");
+  const info=Object.fromEntries(locs.map(l=>[l.id,{s:status(l.id),c:tally(l.id)}]));
+  const match=(k,x)=>k==="all"||(k==="pend"?x.c.pend>0:k==="prog"?(x.s==="prog"||x.s==="check"):x.s===k);
+  const chips=[["all","Semua"],["fix","Ditolak"],["pend","Belum disemak"],["none","Belum mula"],["prog","Dalam proses"],["ready","Lengkap"],["done","Laporan dicipta"]];
+  document.getElementById("chips").innerHTML=chips.map(([k,l])=>`<button class="chip${k==="fix"?" c-fix":""}" data-filter="${k}" aria-pressed="${state.filter===k}">${l}<span class="n">${locs.filter(x=>match(k,info[x.id])).length}</span></button>`).join("");
   const q=state.q.trim().toLowerCase();
-  const rows=locs.filter(l=>{
-    const s=st[l.id]; const f=state.filter;
-    if(f!=="all" && !(f===s || (f==="prog"&&s==="ready"))) return false;
-    return !q || l.n.toLowerCase().includes(q);
-  });
+  const rows=locs.filter(l=>match(state.filter,info[l.id]) && (!q || l.n.toLowerCase().includes(q)));
   document.getElementById("list").innerHTML = rows.length ? rows.map(l=>{
-    const r=state.reports[l.id];
+    const {s,c}=info[l.id];
+    const extra=c.pend&&state.isAdmin&&s!=="check"?`<span class="row-pend">${c.pend} belum disemak</span>`:"";
     return `<button class="row" data-loc="${l.id}"><span class="row-main"><div class="row-t">${esc(l.t)}</div><div class="row-s">${esc(l.j)} · ${esc(l.k)}</div></span>
-      <span class="row-side">${pill(st[l.id])}${dots(r)}</span></button>`}).join("")
+      <span class="row-side">${pill(s)}${extra}${dots(l.id)}</span></button>`}).join("")
     : `<div class="empty">Tiada lokasi sepadan${q?` dengan “${esc(state.q)}”`:""}.</div>`;
 }
 
 function renderLoc(){
   const loc=byId[state.locId]; if(!loc) return go("zones");
-  const r=state.reports[loc.id], st=status(r), n=countPhotos(r), can=editable(r);
+  const r=state.reports[loc.id], st=status(loc.id), ct=tally(loc.id), can=editable(r);
   const tasks=SECTIONS.map((t,i)=>{
-    const c=t.slots.filter(s=>photo(r,t.key,s.key)).length, N=t.slots.length;
+    const c=t.slots.filter(s=>photo(r,t.key,s.key)).length, N=t.slots.length, allOk=t.slots.every(s=>check(loc.id,t.key,s.key).st==="ok");
     const divider=i===TASKS.length?`<div class="extra-h"><b>Gambar tapak</b><span>Tidak dimasukkan dalam laporan LK-1e</span></div>`:"";
-    return `${divider}<section class="task${t.report?"":" extra"}"><div class="task-h"><h2>${t.label}</h2><span class="cnt${c===N?" full":""}">${c}/${N} foto</span></div>
+    return `${divider}<section class="task${t.report?"":" extra"}"><div class="task-h"><h2>${t.label}</h2><span class="cnt${allOk?" full":""}">${c}/${N} foto</span></div>
       <div class="tiles${t.wide?" tiles-4":""}">${t.slots.map(s=>tile(loc,r,t,s,can)).join("")}</div></section>`}).join("");
-  const rep=reportedAt(r), canMake=n===TOTAL&&!!downloads&&!state.making;
+  const nAll=ct.up, z=state.zipping;
+  const rep=reportedAt(r), canMake=ct.ok===ALL_TOTAL&&!!downloads&&!state.making;
+  const need=nAll<ALL_TOTAL?`Muat naik semua ${ALL_TOTAL} foto.`:ct.flag?`Ambil semula ${ct.flag} foto yang ditolak.`:ct.pend?`${ct.pend} foto menunggu semakan admin.`:"Semua foto disahkan.";
   let foot=rep?`<div class="done-card">${ICON.check}<div><b>Laporan LK-1e dicipta</b><small>${fmtDay(rep)}, ${fmtTime(rep)} · <span data-uid="" data-user="${esc(r.reportUser||r.submittedUser||"")}"></span></small></div></div>`
-    :`<div class="submit-note"><span>${n===TOTAL?"Semua foto lengkap.":(state.isAdmin?"Muat naik semua 6 foto untuk mencipta laporan.":"Muat naik semua 6 foto.")}</span><span class="num">${n}/${TOTAL}</span></div>`;
+    :`<div class="submit-note"><span>${need}</span><span class="num" title="disahkan / jumlah">${ct.ok}/${ALL_TOTAL} disahkan</span></div>`;
+  if(state.isAdmin&&ct.pend) foot+=`<button class="btn okb" data-act="apall" ${state.approving?"disabled":""}>${ICON.check}${state.approving?"Mengesahkan…":`Sahkan semua yang belum disemak (${ct.pend})`}</button>`;
   if(state.isAdmin) foot+=`<button class="btn" data-act="mkreport" ${canMake?"":"disabled"}>${state.making?"Mencipta laporan…":rep?"Cipta semula laporan":"Cipta Laporan"}</button>`;
-  const nAll=SECTIONS.reduce((a,t)=>a+t.slots.filter(sl=>photo(r,t.key,sl.key)).length,0), z=state.zipping;
   if(downloads&&state.isAdmin) foot+=`<button class="btn xl" data-act="kzip" ${z||!nAll?"disabled":""}>${ICON.dl}${z?`Memuatkan foto ${z.done}/${z.total}…`:`Muat turun semua foto (${nAll})`}</button>`;
   const y=window.scrollY;
   scr().innerHTML=`
@@ -1260,6 +1540,7 @@ function renderLoc(){
       <span class="eyebrow">Rekod bulan ${fmtMonth(state.month)}</span>
       <h1>${esc(loc.t)}</h1>
       <div class="loc-sub"><span>${esc(loc.j)}</span><span class="kolam">${esc(loc.k)}</span>${pill(st)}</div>
+      ${ct.flag?`<div class="flagbar">${ICON.flag}<div><b>${ct.flag} foto ditolak oleh admin</b><span>Ambil semula foto bertanda merah. Ketik foto untuk lihat sebab.</span></div></div>`:""}
     </div>
     ${tasks}
     <div class="submit"><div class="submit-in">${foot}</div></div>`;
@@ -1267,13 +1548,18 @@ function renderLoc(){
   bindUploads(scr()); fillNames(); hydrateImgs(scr());
 }
 function tile(loc,r,t,s,can){
-  const p=photo(r,t.key,s.key), key=`${loc.id}|${t.key}|${s.key}`, id=`f-${t.key}-${s.key}`;
-  const lbl=`<span class="slot-l">${s.label}${p?`<span class="tick">✓</span>`:(t.report?`<span class="req" aria-label="wajib">*</span>`:"")}</span>`;
+  const p=photo(r,t.key,s.key), key=`${loc.id}|${t.key}|${s.key}`, id=`f-${t.key}-${s.key}`, c=check(loc.id,t.key,s.key);
+  const mark=!p?`<span class="req" aria-label="wajib">*</span>`:c.st==="ok"?`<span class="tick" aria-label="disahkan">✓</span>`:c.st==="flag"?`<span class="xmark" aria-label="ditolak">✕</span>`:"";
+  const lbl=`<span class="slot-l">${s.label}${mark}</span>`;
   if(state.busy[key]) return `<div class="slot">${lbl}<div class="tile busy"><span class="tile-cta"><span class="spin"></span>Memuat naik</span></div></div>`;
-  if(p) return `<div class="slot">${lbl}<button class="tile filled" data-view="${t.key}|${s.key}" aria-label="Lihat foto ${t.label} ${s.label}">
-      <img ${imgSrc(p.asset)} alt="">${p.lat==null?`<span class="tile-flag">Tiada GPS</span>`:""}<span class="tile-meta">${fmtDay(p.takenAt||p.at)} ${fmtTime(p.takenAt||p.at)} · <span data-uid="${esc(p.by||"")}" data-user="${esc(p.user||"")}"></span></span></button></div>`;
+  if(p){
+    const badge=c.st==="ok"?`<span class="tile-rv ok" title="Disahkan">${ICON.check}</span>`:c.st==="flag"?`<span class="tile-rv flag">${ICON.flag}Ditolak</span>`:`<span class="tile-rv pend">Belum semak</span>`;
+    const stateLbl=c.st==="ok"?"disahkan":c.st==="flag"?"ditolak":"belum disemak";
+    return `<div class="slot">${lbl}<button class="tile filled rv-${c.st}" data-view="${t.key}|${s.key}" aria-label="Lihat foto ${t.label} ${s.label}, ${stateLbl}">
+      <img ${imgSrc(p.asset)} alt="">${p.lat==null?`<span class="tile-flag">Tiada GPS</span>`:""}${badge}<span class="tile-meta">${fmtDay(p.takenAt||p.at)} ${fmtTime(p.takenAt||p.at)} · <span data-uid="${esc(p.by||"")}" data-user="${esc(p.user||"")}"></span></span></button>${c.st==="flag"?`<span class="slot-note">${esc(c.rv.note)}</span>`:""}</div>`;
+  }
   if(!can) return `<div class="slot">${lbl}<div class="tile empty locked"><span class="tile-cta">${ICON.cam}Tiada foto</span></div></div>`;
-  return `<div class="slot">${lbl}<label class="tile empty" for="${id}"><input class="vh" type="file" accept="image/*" id="${id}" data-up="${t.key}|${s.key}">
+  return `<div class="slot">${lbl}<label class="tile empty" for="${id}"><input class="vh" type="file" accept="image/*" capture="environment" id="${id}" data-up="${t.key}|${s.key}">
       <span class="tile-cta">${ICON.cam}Ambil foto</span></label></div>`;
 }
 async function bindUploads(root){
@@ -1285,19 +1571,42 @@ function fillNames(){ // users are only ever shown by their username
 }
 
 /* ---------- viewer ---------- */
-function openViewer(task,stage){state.viewing={task,stage,confirm:false,busy:false};renderViewer()}
-function viewerActions(can){
-  const v=state.viewing;
+function openViewer(task,stage){state.viewing={task,stage,confirm:false,busy:false,flag:false,note:""};renderViewer()}
+const REASONS=["Foto kabur","Lokasi tidak tepat","Kerja belum siap","Sudut tidak jelas","Foto terlalu gelap"];
+function reviewBox(c){
+  const who=rv=>`${esc(showName(rv.reviewer_name||"")||"Admin")} · ${fmtStamp(new Date(rv.at))}`;
+  if(c.st==="flag") return `<div class="rv-box flag"><b>${ICON.flag}Ditolak · perlu ambil semula</b><p>${esc(c.rv.note)}</p><small>${who(c.rv)}</small></div>`;
+  if(c.st==="ok") return `<div class="rv-box ok"><b>${ICON.check}Disahkan</b><small>${who(c.rv)}</small></div>`;
+  return `<div class="rv-box pend"><b>Belum disemak oleh admin</b>${c.prev?`<small>Foto sebelum ini ditolak: ${esc(c.prev.note)}</small>`:""}</div>`;
+}
+function viewerActions(c,can){
+  const v=state.viewing, dis=v.busy?"disabled":"";
   if(v.confirm) return `<div class="viewer-act confirm"><div class="viewer-confirm">Padam foto ini? Tindakan ini tidak boleh dibatalkan.</div>
-      <button class="vghost" data-act="delno" ${v.busy?"disabled":""}>Batal</button>
-      <button class="vdanger" data-act="delyes" ${v.busy?"disabled":""}>${ICON.del}${v.busy?"Memadam…":"Padam"}</button></div>`;
-  const btns=[];
-  if(downloads&&state.isAdmin) btns.push(`<button data-act="dl" ${v.busy?"disabled":""}>${ICON.dl}Muat turun</button>`);
-  if(can){
-    btns.push(`<label for="fv">${ICON.swap}Tukar<input class="vh" type="file" accept="image/*" id="fv" data-up="${v.task}|${v.stage}"></label>`);
-    btns.push(`<button class="vdanger" data-act="del">${ICON.del}Padam</button>`);
+      <button class="vghost" data-act="delno" ${dis}>Batal</button>
+      <button class="vdanger" data-act="delyes" ${dis}>${ICON.del}${v.busy?"Memadam…":"Padam"}</button></div>`;
+  if(v.flag) return `<div class="viewer-act flagform">
+      <div class="viewer-confirm">Kenapa foto ini ditolak?</div>
+      <div class="reasons">${REASONS.map(x=>`<button class="reason" data-reason="${esc(x)}" ${dis}>${esc(x)}</button>`).join("")}</div>
+      <label class="vh" for="flag-note">Sebab foto ditolak</label>
+      <textarea id="flag-note" maxlength="500" rows="2" placeholder="Tulis sebab (wajib). Pekerja akan nampak nota ini." ${dis}>${esc(v.note||"")}</textarea>
+      <button class="vghost" data-act="flagno" ${dis}>Batal</button>
+      <button class="vdanger" data-act="flagyes" id="flag-go" ${v.busy||!(v.note||"").trim()?"disabled":""}>${ICON.flag}${v.busy?"Menyimpan…":"Tolak foto"}</button></div>`;
+  const rows=[];
+  if(state.isAdmin){
+    const a=[];
+    if(c.st!=="ok") a.push(`<button class="vok" data-act="rvok" ${dis}>${ICON.check}${v.busy?"Menyimpan…":"Sahkan"}</button>`);
+    if(c.st!=="flag") a.push(`<button class="vdanger" data-act="rvflag" ${dis}>${ICON.flag}Tolak</button>`);
+    rows.push(a);
   }
-  return btns.length?`<div class="viewer-act">${btns.join("")}</div>`:"";
+  const b=[];
+  if(downloads&&state.isAdmin) b.push(`<button class="vghost" data-act="dl" ${dis}>${ICON.dl}Muat turun</button>`);
+  if(can){
+    const retake=c.st==="flag";
+    b.push(`<label for="fv" class="${retake?"vretake":"vplain"}">${retake?ICON.cam:ICON.swap}${retake?"Ambil semula":"Tukar"}<input class="vh" type="file" accept="image/*" capture="environment" id="fv" data-up="${v.task}|${v.stage}"></label>`);
+    b.push(`<button class="vghost" data-act="del">${ICON.del}Padam</button>`);
+  }
+  rows.push(b);
+  return rows.filter(x=>x.length).map(x=>`<div class="viewer-act">${x.join("")}</div>`).join("");
 }
 function fileName(loc,task,stage,p){
   const T=secOf(task).label, S=slotOf(task,stage).label;
@@ -1324,7 +1633,7 @@ async function deletePhoto(){
   if(!p||!editable(r)) return;
   v.busy=true; renderViewer();
   try{
-    await writePhoto(loc,v.task,v.stage,null);
+    await writePhoto(loc,v.task,v.stage,{asset:null,uploads:uploadsOf(r,v.task,v.stage)}); // keep the upload count
     assets.delete(p.asset).catch(()=>{});
     closeViewer(); toast("Foto dipadam");
   }catch(e){
@@ -1336,19 +1645,22 @@ function closeViewer(){state.viewing=null;const v=document.getElementById("viewe
 function renderViewer(){
   const v=document.getElementById("viewer"), {task,stage}=state.viewing, loc=byId[state.locId];
   const r=state.reports[loc.id], p=photo(r,task,stage); if(!p) return closeViewer();
-  const T=secOf(task), S=slotOf(task,stage), can=editable(r);
-  v.innerHTML=`<div class="viewer-top"><div><b>${T.label} · ${S.label}</b><span>${p.takenAt?`Diambil ${fmtStamp(new Date(p.takenAt))}`:`<span class="warn">Tarikh foto tiada</span> · dimuat naik ${fmtStamp(new Date(p.at))}`} · <span data-uid="${esc(p.by||"")}" data-user="${esc(p.user||"")}"></span></span>
+  const T=secOf(task), S=slotOf(task,stage), can=editable(r), c=check(loc.id,task,stage);
+  const ae=document.activeElement, keep=ae&&ae.id==="flag-note"?[ae.selectionStart,ae.selectionEnd]:null;  // live updates must not interrupt typing
+  v.innerHTML=`<div class="viewer-top"><div><b>${T.label} · ${S.label}</b><span>Muatnaik ${uploadsOf(r,task,stage)} · ${p.takenAt?`Diambil ${fmtStamp(new Date(p.takenAt))}`:`<span class="warn">Tarikh foto tiada</span> · dimuat naik ${fmtStamp(new Date(p.at))}`} · <span data-uid="${esc(p.by||"")}" data-user="${esc(p.user||"")}"></span></span>
       ${p.bytes?`<span>Saiz asal ${fmtBytes(p.bytes)}</span>`:""}
       <span>${p.lat!=null?`<a href="${mapsUrl(p)}" target="_blank" rel="noopener">Lihat di Google Maps</a> <span>(${p.gpsSource==="telefon"?`lokasi telefon${p.gpsAcc?` ±${p.gpsAcc} m`:""}`:"GPS dari foto"})</span>`:`<span class="warn">Tiada lokasi GPS</span>`}</span></div>
       <button class="x" data-act="close" aria-label="Tutup">${ICON.x}</button></div>
     <div class="viewer-img"><img ${imgSrc(p.asset)} alt="${T.label} ${S.label}, ${esc(loc.n)}"></div>
-    ${viewerActions(can)}`;
+    ${reviewBox(c)}
+    ${viewerActions(c,can)}`;
   v.hidden=false; bindUploads(v); fillNames(); hydrateImgs(v);
+  if(keep){ const ta=document.getElementById("flag-note"); if(ta){ ta.focus(); try{ta.setSelectionRange(keep[0],keep[1])}catch{} } }
 }
 
 /* ---------- events ---------- */
 document.addEventListener("click",e=>{
-  const t=e.target.closest("[data-zone],[data-go],[data-loc],[data-filter],[data-view],[data-act],[data-auth],[data-admin]"); if(!t) return;
+  const t=e.target.closest("[data-zone],[data-go],[data-loc],[data-filter],[data-view],[data-act],[data-auth],[data-admin],[data-reason],[data-xr]"); if(!t) return;
   const aa=t.dataset.act;
   if(aa==="azip"){ downloadMonthZip(); return; }
   if(aa==="adel"){ state.adminDel={ok:false}; renderAdmin(); return; }
@@ -1362,28 +1674,39 @@ document.addEventListener("click",e=>{
     return; }
   if(t.dataset.auth){ state.authMode=t.dataset.auth; renderAuth(); return; }
   if(t.dataset.act==="logout"){ signOut(); return; }
-  if(t.dataset.zone) go("list",{zone:t.dataset.zone,q:"",filter:"all"});
+  if(t.dataset.reason){ const v=state.viewing; if(!v) return; const cur=(v.note||"").trim(); v.note=cur?(cur.includes(t.dataset.reason)?cur:`${cur}; ${t.dataset.reason}`):t.dataset.reason; renderViewer(); return; }
+  if(t.dataset.zone) go("list",{zone:t.dataset.zone,q:"",filter:t.dataset.f||"all"});
   else if(t.dataset.go) go(t.dataset.go,t.dataset.go==="pwchange"?{forced:false}:{});
-  else if(t.dataset.loc) go("loc",{locId:t.dataset.loc});
+  else if(t.dataset.loc) go("loc",t.dataset.z?{locId:t.dataset.loc,zone:t.dataset.z,q:"",filter:"all"}:{locId:t.dataset.loc});
   else if(t.dataset.filter){state.filter=t.dataset.filter;updateList()}
   else if(t.dataset.view){const [a,b]=t.dataset.view.split("|");openViewer(a,b)}
   else if(t.dataset.act==="close") closeViewer();
   else if(t.dataset.act==="dl") downloadPhoto();
-  else if(t.dataset.act==="xlsx") exportMonth();
+  else if(t.dataset.act==="xlsx") exportRange();
+  else if(t.dataset.xr){ const [a,b]=t.dataset.xr.split("|"); state.range={from:a,to:b,forMonth:state.month,touched:true}; state.rplan=null; renderExport(); }
   else if(t.dataset.act==="del"){state.viewing.confirm=true;renderViewer()}
   else if(t.dataset.act==="delno"){state.viewing.confirm=false;renderViewer()}
   else if(t.dataset.act==="delyes") deletePhoto();
   else if(t.dataset.act==="mprev"||t.dataset.act==="mnext"){const next=shiftMonth(state.month,t.dataset.act==="mprev"?-1:1);if(next>thisMonth())return;state.month=next;renderMonth();subscribeMonth();refresh();}
   else if(t.dataset.act==="mkreport") createKolamReport();
   else if(t.dataset.act==="kzip") downloadKolamPhotos();
+  else if(t.dataset.act==="apall") approveAllPending();
+  else if(t.dataset.act==="rvok") reviewCurrent("ok");
+  else if(t.dataset.act==="rvflag"){state.viewing.flag=true;state.viewing.note="";renderViewer();setTimeout(()=>document.getElementById("flag-note")?.focus(),0)}
+  else if(t.dataset.act==="flagno"){state.viewing.flag=false;renderViewer()}
+  else if(t.dataset.act==="flagyes") reviewCurrent("flag");
 });
 document.addEventListener("change",e=>{
   const el=e.target;
   if(el.id==="del-ok"&&state.adminDel){ state.adminDel.ok=el.checked; renderAdmin(); }
+  if((el.id==="x-from"||el.id==="x-to")&&!state.export){ const r=syncRange(); state.range={...r,[el.id==="x-from"?"from":"to"]:el.value,touched:true}; state.rplan=null; el.blur(); renderExport(); }
 });
-document.addEventListener("input",e=>{ if(e.target.id==="q"){state.q=e.target.value;updateList()} });
+document.addEventListener("input",e=>{
+  if(e.target.id==="q"){state.q=e.target.value;updateList()}
+  if(e.target.id==="flag-note"&&state.viewing){ state.viewing.note=e.target.value; const b=document.getElementById("flag-go"); if(b) b.disabled=state.viewing.busy||!e.target.value.trim(); }
+});
 document.getElementById("viewer").addEventListener("click",e=>{ if(e.target.classList.contains("viewer-img")) closeViewer(); });
-document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&state.viewing) closeViewer(); });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&state.viewing){ if(state.viewing.flag){state.viewing.flag=false;renderViewer()} else closeViewer(); } });
 
 /* ---------- boot ---------- */
 document.getElementById("topbrand-img").src=BLU_LOGO;
