@@ -282,6 +282,7 @@ h1{font:700 2rem/1.05 var(--f-display);margin:14px 0 4px;text-wrap:balance;lette
 .slot{display:flex;flex-direction:column;gap:6px;min-width:0}
 .slot-l{font:600 .78rem/1 var(--f-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:6px}
 .slot-l .req{color:var(--danger)}
+.task-h h2 .opt{font-size:.72em;font-weight:500;color:var(--muted,#6b7280);text-transform:none;letter-spacing:0}
 .slot-l .tick{color:var(--ok)}
 .slot-l .xmark{color:var(--danger)}
 .slot{container-type:inline-size}
@@ -572,8 +573,11 @@ const TOTAL = TASKS.length * STAGES.length;
 // Extra site photos: shown on the kolam page, kept in the monthly ZIP, never put in the LK-1e reports
 const EXTRA = [
   // Keys stay f1/f2/f3 so photos already uploaded keep their place; only the names changed
-  {key:"inlet",label:"Gambar Inlet",slots:["Sebelum","Semasa","Selepas"].map((x,i)=>({key:"f"+(i+1),label:x}))},
-  {key:"outlet",label:"Gambar Outlet",slots:["Sebelum","Semasa","Selepas"].map((x,i)=>({key:"f"+(i+1),label:x}))},
+  // Second inlet/outlet set is optional: only needed when the kolam has one (counts once a photo is in)
+  {key:"inlet",label:"Gambar Inlet 1",slots:["Sebelum","Semasa","Selepas"].map((x,i)=>({key:"f"+(i+1),label:x}))},
+  {key:"inlet2",label:"Gambar Inlet 2",slots:["Sebelum","Semasa","Selepas"].map((x,i)=>({key:"f"+(i+1),label:x})),optional:true},
+  {key:"outlet",label:"Gambar Outlet 1",slots:["Sebelum","Semasa","Selepas"].map((x,i)=>({key:"f"+(i+1),label:x}))},
+  {key:"outlet2",label:"Gambar Outlet 2",slots:["Sebelum","Semasa","Selepas"].map((x,i)=>({key:"f"+(i+1),label:x})),optional:true},
   {key:"kolam",label:"Gambar Kolam",slots:["A","B","C","D"].map(x=>({key:x.toLowerCase(),label:"Bahagian "+x})),wide:true},
 ];
 const SECTIONS = [...TASKS.map(t=>({...t,slots:STAGES,report:true})), ...EXTRA];
@@ -582,6 +586,11 @@ const slotOf=(k,sl)=>secOf(k).slots.find(x=>x.key===sl);
 // Every photo slot on the kolam page; a kolam is only "Lengkap" once all of these have a photo
 const ALL_SLOTS = SECTIONS.flatMap(t=>t.slots.map(s=>[t.key,s.key]));
 const ALL_TOTAL = ALL_SLOTS.length;
+// Slots this kolam needs: every required slot, plus the whole Inlet 2 / Outlet 2 set once any photo of it is in
+const slotsOf=locId=>{ const r=state.reports[locId];
+  const used=new Set(SECTIONS.filter(t=>t.optional&&t.slots.some(x=>photo(r,t.key,x.key))).map(t=>t.key));
+  return ALL_SLOTS.filter(([t])=>!secOf(t).optional||used.has(t)); };
+const REQ_TOTAL = ALL_SLOTS.filter(([t])=>!secOf(t).optional).length;
 const byId = Object.fromEntries(LOCS.map(l => [l.id, l]));
 // Street name for file and folder names; streets with several ponds get the kolam added
 const STREET_COUNT = LOCS.reduce((m,l)=>(m[l.j.toLowerCase()]=(m[l.j.toLowerCase()]||0)+1,m),{});
@@ -747,25 +756,25 @@ function check(locId,t,s){
   const prev=rv&&rv.state==="flag"?rv:null; // a retaken photo needs sending and checking again
   return {st:sentOf(locId)?.assets?.[t]?.[s]===p.asset?"pend":"draft",p,prev};
 }
-function tally(locId){ const c={up:0,ok:0,flag:0,pend:0,draft:0}; for(const [t,s] of ALL_SLOTS){ const x=check(locId,t,s).st; if(x!=="none"){c.up++;c[x]++;} } return c; }
+function tally(locId){ const sl=slotsOf(locId), c={up:0,ok:0,flag:0,pend:0,draft:0,total:sl.length}; for(const [t,s] of sl){ const x=check(locId,t,s).st; if(x!=="none"){c.up++;c[x]++;} } return c; }
 function status(locId){
   const r=state.reports[locId], c=tally(locId);
   if(c.flag) return "fix";
   if(reportedAt(r)) return state.isAdmin?"done":"ready"; // workers never see report state
-  if(c.ok===ALL_TOTAL) return "ready";
-  if(c.up===ALL_TOTAL) return c.draft?"unsent":"check";
+  if(c.ok===c.total) return "ready";
+  if(c.up===c.total) return c.draft?"unsent":"check";
   return c.up?"prog":"none";
 }
 // Workers may change a photo only until it is sent, or when the admin rejects it (the database enforces the same)
 const canChange=(locId,t,s)=>state.isAdmin||["none","draft","flag"].includes(check(locId,t,s).st);
-const canSend=c=>c.up===ALL_TOTAL&&!c.flag&&c.draft>0;
+const canSend=c=>c.up===c.total&&!c.flag&&c.draft>0;
 const STATUS_LABEL={none:"Belum mula",prog:"Dalam proses",unsent:"Belum dihantar",check:"Menunggu semakan",fix:"Perlu ambil semula",ready:"Lengkap",done:"Laporan dicipta"};
 const sentLine=(sn,long)=>sn?`<span>Dihantar <span class="nw">${long?fmtStamp(new Date(sn.at)):fmtDay(sn.at)}</span>${long&&sn.user?` · ${esc(showName(sn.user))}`:""}${sn.n>1?` · <span class="nw">kali ke-${sn.n}</span>`:""}</span>`:"";
 const nextPending=(locId,t,s)=>{ const i=ALL_SLOTS.findIndex(([a,b])=>a===t&&b===s);
   for(let k=1;k<=ALL_SLOTS.length;k++){ const [a,b]=ALL_SLOTS[(i+k)%ALL_SLOTS.length]; if(check(locId,a,b).st==="pend") return [a,b]; } return null; };
 const reviewErrMsg=e=>/photo_reviews|42P01|PGRST20/i.test(`${e?.code||""} ${e?.message||""}`)?"Semakan foto belum disediakan. Jalankan photo_reviews.sql dalam Supabase.":/row-level|42501|permission/i.test(e?.message||"")?"Hanya admin boleh menyemak foto.":"Tidak dapat disimpan. Semak sambungan dan cuba lagi.";
 function pill(st){return `<span class="pill p-${st}">${STATUS_LABEL[st]}</span>`}
-function dots(locId){let h=`<span class="dots" aria-hidden="true">`;for(const [t,s] of ALL_SLOTS){const x=check(locId,t,s).st;h+=`<i class="${x==="none"?"":x}"></i>`}return h+"</span>"}
+function dots(locId){let h=`<span class="dots" aria-hidden="true">`;for(const [t,s] of slotsOf(locId)){const x=check(locId,t,s).st;h+=`<i class="${x==="none"?"":x}"></i>`}return h+"</span>"}
 let toastT;
 function toast(msg,err){const el=document.getElementById("toast");el.textContent=msg;el.className="toast"+(err?" err":"");el.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>el.hidden=true,err?5200:2600)}
 const editable = r => !!(sb && state.me);
@@ -910,7 +919,7 @@ async function reviewCurrent(st){
 async function createKolamReport(){
   if(state.making) return;
   if(!state.isAdmin) return; // reports are admin only
-  if(tally(state.locId).ok!==ALL_TOTAL){ toast(`Semua ${ALL_TOTAL} foto perlu disahkan dahulu.`,true); return; }
+  { const c=tally(state.locId); if(c.ok!==c.total){ toast(`Semua ${c.total} foto perlu disahkan dahulu.`,true); return; } }
   if(!downloads||!window.JSZip){ toast("Muat turun laporan tidak tersedia di sini.",true); return; }
   const loc=byId[state.locId], month=state.month, r=state.reports[loc.id];
   state.making=true; renderLoc();
@@ -1582,14 +1591,14 @@ function renderLoc(){
   const tasks=SECTIONS.map((t,i)=>{
     const c=t.slots.filter(s=>photo(r,t.key,s.key)).length, N=t.slots.length, allOk=t.slots.every(s=>check(loc.id,t.key,s.key).st==="ok");
     const divider=i===TASKS.length?`<div class="extra-h"><b>Gambar tapak</b>${state.isAdmin?`<span>Tidak dimasukkan dalam laporan LK-1e</span>`:""}</div>`:"";
-    return `${divider}<section class="task${t.report?"":" extra"}"><div class="task-h"><h2>${t.label}</h2><span class="cnt${allOk?" full":""}">${c}/${N} foto</span></div>
+    return `${divider}<section class="task${t.report?"":" extra"}"><div class="task-h"><h2>${t.label}${t.optional?` <span class="opt">jika ada</span>`:""}</h2><span class="cnt${allOk?" full":""}">${c}/${N} foto</span></div>
       <div class="tiles${t.wide?" tiles-4":""}">${t.slots.map(s=>tile(loc,r,t,s,can&&canChange(loc.id,t.key,s.key))).join("")}</div></section>`}).join("");
   const nAll=ct.up, z=state.zipping;
-  const rep=reportedAt(r), canMake=ct.ok===ALL_TOTAL&&!!downloads&&!state.making;
+  const rep=reportedAt(r), canMake=ct.ok===ct.total&&!!downloads&&!state.making;
   const sn=sentOf(loc.id), sendOk=canSend(ct);
-  const need=nAll<ALL_TOTAL?`Muat naik semua ${ALL_TOTAL} foto, kemudian tekan Hantar.`:ct.flag?`Ambil semula ${ct.flag} foto yang ditolak, kemudian tekan Hantar.`:ct.draft?`Tekan Hantar untuk hantar foto kepada admin.`:ct.pend?`${ct.pend} foto menunggu semakan admin.`:"Semua foto disahkan.";
+  const need=nAll<ct.total?`Muat naik semua ${ct.total} foto${ct.total===REQ_TOTAL?" (tambah Inlet 2 / Outlet 2 jika kolam ada)":""}, kemudian tekan Hantar.`:ct.flag?`Ambil semula ${ct.flag} foto yang ditolak, kemudian tekan Hantar.`:ct.draft?`Tekan Hantar untuk hantar foto kepada admin.`:ct.pend?`${ct.pend} foto menunggu semakan admin.`:"Semua foto disahkan.";
   let foot=rep&&state.isAdmin?`<div class="done-card">${ICON.check}<div><b>Laporan LK-1e dicipta</b><small>${fmtStamp(new Date(rep))} · <span data-uid="" data-user="${esc(r.reportUser||r.submittedUser||"")}"></span></small></div></div>`
-    :`<div class="submit-note"><span>${need}</span><span class="num" title="disahkan / jumlah">${ct.ok}/${ALL_TOTAL} disahkan</span></div>`;
+    :`<div class="submit-note"><span>${need}</span><span class="num" title="disahkan / jumlah">${ct.ok}/${ct.total} disahkan</span></div>`;
   if(can&&(!state.isAdmin||sendOk)){
     const lbl=sn?"Hantar semula":"Hantar";
     foot+=state.sendConfirm&&sendOk&&!state.sending
@@ -1619,7 +1628,8 @@ function renderLoc(){
 }
 function tile(loc,r,t,s,can){
   const p=photo(r,t.key,s.key), key=`${loc.id}|${t.key}|${s.key}`, id=`f-${t.key}-${s.key}`, c=check(loc.id,t.key,s.key);
-  const mark=!p?`<span class="req" aria-label="wajib">*</span>`:c.st==="ok"?`<span class="tick" aria-label="disahkan">✓</span>`:c.st==="flag"?`<span class="xmark" aria-label="ditolak">✕</span>`:"";
+  const need=!t.optional||t.slots.some(x=>photo(r,t.key,x.key));
+  const mark=!p?(need?`<span class="req" aria-label="wajib">*</span>`:""):c.st==="ok"?`<span class="tick" aria-label="disahkan">✓</span>`:c.st==="flag"?`<span class="xmark" aria-label="ditolak">✕</span>`:"";
   const lbl=`<span class="slot-l">${s.label}${mark}</span>`;
   if(state.busy[key]) return `<div class="slot">${lbl}<div class="tile busy"><span class="tile-cta"><span class="spin"></span>${state.busy[key]==="del"?"Memadam":"Memuat naik"}</span></div></div>`;
   if(p){
