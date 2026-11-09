@@ -635,8 +635,21 @@ let sb=null;
 try{ sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false,storageKey:"fkk-auth"}}); }catch(e){ sb=null; }
 let db=sb, user=null, uid=null, unsub=null, ready=false;
 async function rpc(fn,args){ const {data,error}=await sb.rpc(fn,args||{}); if(error) throw error; return data; }
+// Supabase returns at most 1000 rows per request, so read in pages until all rows are in.
+// Without this, once a month has over 1000 photo checks, the rest silently go missing on reload.
+async function selectAll(table,cols,month,order){
+  const PAGE=1000, out=[];
+  for(let from=0;;from+=PAGE){
+    let q=sb.from(table).select(cols).eq("month",month);
+    for(const c of order) q=q.order(c,{ascending:true});
+    const {data,error}=await q.range(from,from+PAGE-1);
+    if(error) throw error;
+    out.push(...(data||[]));
+    if(!data||data.length<PAGE) return out;
+  }
+}
 async function loadMonthReports(month){
-  const {data,error}=await sb.from("reports").select("loc_id,doc").eq("month",month);
+  let data,error; try{ data=await selectAll("reports","loc_id,doc",month,["loc_id"]); }catch(e){ error=e; }
   if(error) throw error;
   const m={}; (data||[]).forEach(row=>{ m[row.loc_id]=row.doc||{}; }); return m;
 }
@@ -644,7 +657,7 @@ async function loadMonthReports(month){
 const RV_COLS="loc_id,task,slot,asset,state,note,reviewer_name,at";
 function putReview(m,row){ ((m[row.loc_id]??={})[row.task]??={})[row.slot]=row; }
 async function loadMonthReviews(month){
-  const {data,error}=await sb.from("photo_reviews").select(RV_COLS).eq("month",month);
+  let data,error; try{ data=await selectAll("photo_reviews",RV_COLS,month,["loc_id","task","slot"]); }catch(e){ error=e; }
   if(error) throw error;
   const m={}; (data||[]).forEach(row=>putReview(m,row)); return m;
 }
