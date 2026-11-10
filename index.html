@@ -987,8 +987,10 @@ async function downloadKolamPhotos(){
 
 /* ---------- monthly Excel (LK-1e) ---------- */
 state.export=null; // {done,total,phase}
-/* LK-1e for a date range: only admin-approved (Sahkan) Sebelum/Semasa/Selepas photos whose
-   phone date falls inside the range, from whichever monthly records the range covers. */
+/* LK-1e for a date range: a kolam goes in when its work started inside the range (the phone date of
+   its earliest Sebelum/Semasa/Selepas photo in that month's record). Every admin-approved (Sahkan)
+   photo of that kolam then goes in, including ones taken after the end date, so each kolam's sheet
+   is complete and a kolam never appears half in one report and half in the next. */
 const BLN3=["Jan","Feb","Mac","Apr","Mei","Jun","Jul","Ogo","Sep","Okt","Nov","Dis"];
 const ymd=d=>`${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`;
 const dmy=s=>{const [y,m,d]=s.split("-");return `${d}/${m}/${y}`};
@@ -1009,22 +1011,23 @@ async function monthData(m,fresh){
   return state.rcache[m]={reports,reviews,at:Date.now()};
 }
 function rangePlan(from,to,data){ // data: {month:{reports,reviews}}
-  const months=Object.keys(data).sort(), out=[]; let left=0, photos=0;
+  const months=Object.keys(data).sort(), out=[]; let left=0, photos=0, late=0;
   for(const m of months){
     const {reports,reviews}=data[m];
     for(const l of LOCS){
       const r=reports[l.id]; if(!r?.photos) continue;
-      const forms=TASKS.map(t=>({jenis:t.label.toUpperCase(),photos:[null,null,null]})); let n=0;
-      TASKS.forEach((t,ti)=>STAGES.forEach((st,si)=>{
-        const p=photo(r,t.key,st.key); if(!p) return;
-        const d=photoDay(p); if(!d||d<from||d>to) return;
+      const all=[]; TASKS.forEach((t,ti)=>STAGES.forEach((st,si)=>{ const p=photo(r,t.key,st.key); if(p) all.push({t,st,ti,si,p,d:photoDay(p)}); }));
+      const days=all.map(x=>x.d).filter(Boolean).sort(); if(!days.length) continue;
+      const start=days[0]; if(start<from||start>to) continue; // work started outside the range
+      const forms=TASKS.map(t=>({jenis:t.label.toUpperCase(),photos:[null,null,null]})); let n=0, nl=0;
+      for(const {t,st,ti,si,p,d} of all){
         const rv=reviews[l.id]?.[t.key]?.[st.key];
-        if(rv&&rv.asset===p.asset&&rv.state==="ok"){ forms[ti].photos[si]=p.asset; n++; } else left++;
-      }));
-      if(n){ out.push({m,l,forms}); photos+=n; }
+        if(rv&&rv.asset===p.asset&&rv.state==="ok"){ forms[ti].photos[si]=p.asset; n++; if(d>to) nl++; } else left++;
+      }
+      if(n){ out.push({m,l,forms}); photos+=n; late+=nl; }
     }
   }
-  return {sheets:out,photos,left,locs:new Set(out.map(x=>x.l.id)).size,multi:new Set(out.map(x=>x.m)).size>1};
+  return {sheets:out,photos,left,late,locs:new Set(out.map(x=>x.l.id)).size,multi:new Set(out.map(x=>x.m)).size>1};
 }
 function sheetNamesFor(plan){
   const used=new Set();
@@ -1057,7 +1060,7 @@ function renderExport(){
   if(!document.getElementById("x-from")){ // built once so the date pickers are not reset by live updates
     el.innerHTML=`<span class="export-ic">${ICON.xls}</span>
       <span class="export-t">Muat turun Laporan LK-1e</span>
-      <span class="export-s">Foto Sebelum, Semasa dan Selepas yang telah disahkan, mengikut tarikh foto diambil.</span>
+      <span class="export-s">Foto Sebelum, Semasa dan Selepas yang telah disahkan. Kolam dipilih mengikut tarikh foto pertamanya, dan semua fotonya dimasukkan, termasuk yang diambil selepas tarikh akhir.</span>
       <div class="xrange">
         <label class="field"><span>Dari</span><input type="date" id="x-from" max="${today}"></label>
         <label class="field"><span>Hingga</span><input type="date" id="x-to" max="${today}"></label>
@@ -1077,8 +1080,8 @@ function renderExport(){
   if(!pl||(!pl.err&&!pl.loading&&pl.key!==key)){ if(!pl||!pl.loading) setTimeout(refreshRangePlan,0); }
   const sum=document.getElementById("x-sum");
   sum.innerHTML=pl?.err?`<span class="xerr">${pl.err}</span>`:!pl||pl.loading||pl.key!==key?`<span class="muted">Mengira foto…</span>`
-    :pl.sheets.length?`<span class="muted"><span class="num">${pl.locs}</span> lokasi · <span class="num">${pl.photos}</span> foto disahkan${pl.multi?` · <span class="num">${pl.sheets.length}</span> sheet (satu bagi setiap jalan, setiap bulan)`:""}</span>${pl.left?`<span class="export-left"><span class="num">${pl.left}</span> foto dalam julat ini belum disahkan dan tidak dimasukkan.</span>`:""}`
-    :`<span class="muted">Tiada foto disahkan antara ${dmy(r.from)} dan ${dmy(r.to)}.</span>${pl.left?`<span class="export-left"><span class="num">${pl.left}</span> foto dalam julat ini belum disahkan.</span>`:""}`;
+    :pl.sheets.length?`<span class="muted"><span class="num">${pl.locs}</span> lokasi · <span class="num">${pl.photos}</span> foto disahkan${pl.late?` (<span class="num">${pl.late}</span> diambil selepas ${dmy(r.to)})`:""}${pl.multi?` · <span class="num">${pl.sheets.length}</span> sheet (satu bagi setiap jalan, setiap bulan)`:""}</span>${pl.left?`<span class="export-left"><span class="num">${pl.left}</span> foto bagi kolam ini belum disahkan dan tidak dimasukkan.</span>`:""}`
+    :`<span class="muted">Tiada foto disahkan antara ${dmy(r.from)} dan ${dmy(r.to)}.</span>${pl.left?`<span class="export-left"><span class="num">${pl.left}</span> foto bagi kolam yang bermula dalam julat ini belum disahkan.</span>`:""}`;
   const bar=document.getElementById("x-bar"); bar.hidden=!x; if(x) bar.firstElementChild.style.width=`${x.total?Math.round(x.done/x.total*100):0}%`;
   const btn=document.getElementById("x-btn"), can=!x&&pl&&!pl.err&&!pl.loading&&pl.key===key&&pl.sheets.length;
   btn.disabled=!can;
