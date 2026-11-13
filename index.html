@@ -208,6 +208,9 @@ h1{font:700 2rem/1.05 var(--f-display);margin:14px 0 4px;text-wrap:balance;lette
 .xrange input{-webkit-appearance:none;appearance:none;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 10px;font-size:1rem;width:100%;min-width:0;color:var(--ink)}
 .xrange input:disabled{opacity:.6}
 .xquick{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.xmonth{grid-column:1/-1;margin-top:12px}
+.xmonth select{-webkit-appearance:none;appearance:none;background:var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23667' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center/18px;border:1px solid var(--line);border-radius:10px;padding:10px 36px 10px 10px;font-size:1rem;width:100%;color:var(--ink)}
+.xmonth select:disabled{opacity:.6}
 .xsum{grid-column:1/-1;margin-top:8px;font-size:.88rem;min-height:1.3em}
 .xsum .num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;color:var(--ink)}
 .xerr{color:var(--danger);font-weight:600}
@@ -1138,16 +1141,43 @@ function sentRows(reports){
     const d=new Date(at); if(isNaN(d)) continue; rows.push({l,d}); }
   return rows.sort((a,b)=>a.d-b.d||a.l.z.localeCompare(b.l.z)||a.l.n.localeCompare(b.l.n));
 }
+const SUB_FIRST="2026-10"; // contract start; the list offers every month from here to this month
+const subMonth=()=>state.subMonth||state.month;
+state.subCount={}; // month -> number of kolam sent, for months other than the live one
+function subCountFor(m){
+  if(m===state.month) return state.loaded?sentRows(state.reports).length:null;
+  if(m in state.subCount) return state.subCount[m];
+  state.subCount[m]=null;
+  monthData(m).then(d=>{ state.subCount[m]=sentRows(d.reports).length; },()=>{ state.subCount[m]="err"; }).finally(renderSubList);
+  return null;
+}
 function renderSubList(){
   const el=document.getElementById("sublist"); if(!el) return;
   if(!ready||!db||!state.isAdmin){el.hidden=true;return}
   el.hidden=false;
-  const busy=!!state.subx, n=state.loaded?sentRows(state.reports).length:null;
-  el.innerHTML=`<span class="export-ic">${ICON.xls}</span>
-    <span class="export-t">Senarai Kolam Sedia Dihantar</span>
-    <span class="export-s">Kolam yang semua fotonya telah dihantar (Hantar) dalam rekod bulan ini, dengan tarikh dihantar. Zon, Taman, Jalan dan Kolam dalam lajur berasingan.</span>
-    <div class="xsum" aria-live="polite">${n===null?`<span class="muted">Memuatkan rekod…</span>`:n?`<span class="muted"><span class="num">${n}</span> kolam dihantar dalam rekod ${fmtMonth(state.month)}</span>`:`<span class="muted">Tiada kolam dihantar dalam rekod ${fmtMonth(state.month)}.</span>`}</div>
-    <button class="btn" data-act="subxlsx" ${busy||!n?"disabled":""}>${busy?"Membina fail Excel…":`Muat turun Excel (${fmtMonth(state.month)})`}</button>`;
+  if(!document.getElementById("sub-month")){ // built once so the month list is not reset by live updates
+    el.innerHTML=`<span class="export-ic">${ICON.xls}</span>
+      <span class="export-t">Senarai Kolam Sedia Dihantar</span>
+      <span class="export-s">Kolam yang semua fotonya telah dihantar (Hantar) dalam rekod bulan yang dipilih, dengan tarikh dihantar. Zon, Taman, Jalan dan Kolam dalam lajur berasingan.</span>
+      <label class="field xmonth"><span>Bulan</span><select id="sub-month"></select></label>
+      <div class="xsum" id="sub-sum" aria-live="polite"></div>
+      <button class="btn" data-act="subxlsx" id="sub-btn"></button>`;
+  }
+  const m=subMonth(), sel=document.getElementById("sub-month"), busy=!!state.subx;
+  const months=[]; for(let x=thisMonth();x>=SUB_FIRST&&months.length<60;x=shiftMonth(x,-1)) months.push(x);
+  if(!months.includes(m)) months.push(m);
+  const opts=months.map(x=>`<option value="${x}"${x===m?" selected":""}>${fmtMonth(x)}</option>`).join("");
+  if(sel.dataset.opts!==opts){ sel.innerHTML=opts; sel.dataset.opts=opts; }
+  if(document.activeElement!==sel) sel.value=m;
+  sel.disabled=busy;
+  const n=subCountFor(m);
+  document.getElementById("sub-sum").innerHTML=n===null?`<span class="muted">Memuatkan rekod…</span>`
+    :n==="err"?`<span class="xerr">Rekod tidak dapat dimuatkan. Semak sambungan.</span>`
+    :n?`<span class="muted"><span class="num">${n}</span> kolam dihantar dalam rekod ${fmtMonth(m)}</span>`
+    :`<span class="muted">Tiada kolam dihantar dalam rekod ${fmtMonth(m)}.</span>`;
+  const btn=document.getElementById("sub-btn");
+  btn.disabled=busy||!(typeof n==="number"&&n>0);
+  btn.textContent=busy?"Membina fail Excel…":`Muat turun Excel (${fmtMonth(m)})`;
 }
 const xmlEsc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const excelDay=d=>(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(1899,11,30))/86400000;
@@ -1176,9 +1206,10 @@ async function buildSubXlsx(month,rows){
 async function exportSubList(){
   if(state.subx||!state.isAdmin) return;
   if(!window.JSZip){toast("Komponen Excel gagal dimuatkan. Muat semula halaman.",true);return}
-  const month=state.month; state.subx=true; renderSubList();
+  const month=subMonth(); state.subx=true; renderSubList();
   try{
     const {reports}=await monthData(month,true), rows=sentRows(reports);
+    if(month!==state.month) state.subCount[month]=rows.length;
     if(!rows.length){ toast(`Tiada kolam dihantar dalam rekod ${fmtMonth(month)}.`,true); return; }
     const bytes=await buildSubXlsx(month,rows);
     await downloads.save({filename:`Kolam Ready to Submit - ${fmtMonth(month)}.xlsx`,data:new Blob([bytes],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"})});
@@ -1905,6 +1936,7 @@ document.addEventListener("click",e=>{
 document.addEventListener("change",e=>{
   const el=e.target;
   if(el.id==="del-ok"&&state.adminDel){ state.adminDel.ok=el.checked; renderAdmin(); }
+  if(el.id==="sub-month"&&!state.subx){ state.subMonth=el.value===state.month?null:el.value; el.blur(); renderSubList(); }
   if((el.id==="x-from"||el.id==="x-to")&&!state.export){ const r=syncRange(); state.range={...r,[el.id==="x-from"?"from":"to"]:el.value,touched:true}; state.rplan=null; el.blur(); renderExport(); }
 });
 document.addEventListener("input",e=>{
