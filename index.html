@@ -1130,6 +1130,63 @@ async function exportRange(){
   }finally{ state.export=null; state.rplan=null; renderExport(); }
 }
 
+/* Senarai kolam sedia dihantar: one row per kolam that was sent with Hantar in the chosen month's record,
+   with the day it was (last) sent. Admin only; a small stand-alone .xlsx built with JSZip. */
+function sentRows(reports){
+  const rows=[];
+  for(const l of LOCS){ const at=reports[l.id]?.sent?.at; if(!at) continue;
+    const d=new Date(at); if(isNaN(d)) continue; rows.push({l,d}); }
+  return rows.sort((a,b)=>a.d-b.d||a.l.z.localeCompare(b.l.z)||a.l.n.localeCompare(b.l.n));
+}
+function renderSubList(){
+  const el=document.getElementById("sublist"); if(!el) return;
+  if(!ready||!db||!state.isAdmin){el.hidden=true;return}
+  el.hidden=false;
+  const busy=!!state.subx, n=state.loaded?sentRows(state.reports).length:null;
+  el.innerHTML=`<span class="export-ic">${ICON.xls}</span>
+    <span class="export-t">Senarai Kolam Sedia Dihantar</span>
+    <span class="export-s">Kolam yang semua fotonya telah dihantar (Hantar) dalam rekod bulan ini, dengan tarikh dihantar. Zon, Taman, Jalan dan Kolam dalam lajur berasingan.</span>
+    <div class="xsum" aria-live="polite">${n===null?`<span class="muted">Memuatkan rekod…</span>`:n?`<span class="muted"><span class="num">${n}</span> kolam dihantar dalam rekod ${fmtMonth(state.month)}</span>`:`<span class="muted">Tiada kolam dihantar dalam rekod ${fmtMonth(state.month)}.</span>`}</div>
+    <button class="btn" data-act="subxlsx" ${busy||!n?"disabled":""}>${busy?"Membina fail Excel…":`Muat turun Excel (${fmtMonth(state.month)})`}</button>`;
+}
+const xmlEsc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const excelDay=d=>(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(1899,11,30))/86400000;
+async function buildSubXlsx(month,rows){
+  const zip=new JSZip(), col=i=>"ABCDEF"[i];
+  const str=(r,c,v,s)=>`<c r="${col(c)}${r}" t="inlineStr" s="${s}"><is><t xml:space="preserve">${xmlEsc(v)}</t></is></c>`;
+  const num=(r,c,v,s)=>`<c r="${col(c)}${r}" s="${s}"><v>${v}</v></c>`;
+  const now=new Date(), stamp=`${now.getDate()} ${BLN3[now.getMonth()]} ${now.getFullYear()} ${p2(now.getHours())}:${p2(now.getMinutes())}`;
+  const out=[];
+  out.push(`<row r="1" ht="20" customHeight="1">${str(1,0,`Kolam ready to submit – ${fmtMonth(month)}`,1)}</row>`);
+  out.push(`<row r="2">${str(2,0,`Source: BluApp, ${fmtMonth(month)} records, downloaded ${stamp}. Date = the day the full photo set was sent with Hantar; for kolam sent more than once, the latest send.`,2)}</row>`);
+  out.push(`<row r="4">${["No.","Zone","Taman","Jalan","Kolam Number","Date Ready to Submit"].map((h,i)=>str(4,i,h,3)).join("")}</row>`);
+  rows.forEach(({l,d},i)=>{ const r=5+i;
+    out.push(`<row r="${r}">${num(r,0,i+1,5)}${str(r,1,l.z,5)}${str(r,2,l.t,4)}${str(r,3,l.j,4)}${str(r,4,l.k,5)}${num(r,5,excelDay(d),6)}</row>`); });
+  const last=4+rows.length, tr=last+2;
+  out.push(`<row r="${tr}">${str(tr,0,"Total kolam",7)}<c r="B${tr}" s="8"><f>COUNTA(C5:C${last})</f><v>${rows.length}</v></c></row>`);
+  zip.file("[Content_Types].xml",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`);
+  zip.file("_rels/.rels",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`);
+  zip.file("xl/workbook.xml",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Ready to Submit" sheetId="1" r:id="rId1"/></sheets><definedNames><definedName name="_xlnm._FilterDatabase" localSheetId="0" hidden="1">'Ready to Submit'!$A$4:$F$${last}</definedName></definedNames><calcPr calcId="191029" fullCalcOnLoad="1"/></workbook>`);
+  zip.file("xl/_rels/workbook.xml.rels",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`);
+  const bd=`<border><left style="thin"><color rgb="FFBFBFBF"/></left><right style="thin"><color rgb="FFBFBFBF"/></right><top style="thin"><color rgb="FFBFBFBF"/></top><bottom style="thin"><color rgb="FFBFBFBF"/></bottom><diagonal/></border>`;
+  zip.file("xl/styles.xml",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><numFmts count="1"><numFmt numFmtId="164" formatCode="d mmm yyyy"/></numFmts><fonts count="5"><font><sz val="10"/><name val="Arial"/></font><font><b/><sz val="13"/><name val="Arial"/></font><font><i/><sz val="9"/><color rgb="FF555555"/><name val="Arial"/></font><font><b/><sz val="10"/><color rgb="FFFFFFFF"/><name val="Arial"/></font><font><b/><sz val="10"/><name val="Arial"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF1F3864"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border>${bd}</borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="9"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/><xf numFmtId="0" fontId="2" fillId="0" borderId="0" xfId="0" applyFont="1"/><xf numFmtId="0" fontId="3" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf><xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1"/><xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1"><alignment horizontal="center"/></xf><xf numFmtId="164" fontId="0" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center"/></xf><xf numFmtId="0" fontId="4" fillId="0" borderId="0" xfId="0" applyFont="1"/><xf numFmtId="0" fontId="4" fillId="0" borderId="0" xfId="0" applyFont="1" applyAlignment="1"><alignment horizontal="center"/></xf></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`);
+  zip.file("xl/worksheets/sheet1.xml",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheetViews><sheetView workbookViewId="0"><pane ySplit="4" topLeftCell="A5" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><sheetFormatPr defaultRowHeight="14"/><cols><col min="1" max="1" width="6" customWidth="1"/><col min="2" max="2" width="8" customWidth="1"/><col min="3" max="3" width="34" customWidth="1"/><col min="4" max="4" width="32" customWidth="1"/><col min="5" max="5" width="18" customWidth="1"/><col min="6" max="6" width="22" customWidth="1"/></cols><sheetData>${out.join("")}</sheetData><autoFilter ref="A4:F${last}"/><pageMargins left="0.5" right="0.5" top="0.6" bottom="0.6" header="0.3" footer="0.3"/><pageSetup paperSize="9" orientation="portrait" fitToHeight="0"/></worksheet>`);
+  return zip.generateAsync({type:"uint8array",compression:"DEFLATE"});
+}
+async function exportSubList(){
+  if(state.subx||!state.isAdmin) return;
+  if(!window.JSZip){toast("Komponen Excel gagal dimuatkan. Muat semula halaman.",true);return}
+  const month=state.month; state.subx=true; renderSubList();
+  try{
+    const {reports}=await monthData(month,true), rows=sentRows(reports);
+    if(!rows.length){ toast(`Tiada kolam dihantar dalam rekod ${fmtMonth(month)}.`,true); return; }
+    const bytes=await buildSubXlsx(month,rows);
+    await downloads.save({filename:`Kolam Ready to Submit - ${fmtMonth(month)}.xlsx`,data:new Blob([bytes],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"})});
+    toast("Excel dimuat turun");
+  }catch(e){ toast("Excel tidak dapat disediakan. Cuba lagi.",true); }
+  finally{ state.subx=false; renderSubList(); }
+}
+
 /* ---------- sign-in ---------- */
 // App-level accounts: users/{username} = {name, salt, hash, createdAt}. Passwords are hashed with PBKDF2.
 let usersMap={}, unsubUsers=null;
@@ -1532,7 +1589,8 @@ function renderZones(){
       </button>`).join("")}
     </div>
     <section class="todo" id="todo"></section>
-    <section class="export" id="export" hidden></section>`;
+    <section class="export" id="export" hidden></section>
+    <section class="export" id="sublist" hidden></section>`;
   document.getElementById("me-name").textContent=state.me?`${state.me.display} · ${state.me.role==="admin"?"Admin":"Pekerja"}`:"";
   updateZones();
 }
@@ -1549,6 +1607,7 @@ function updateZones(){
   }
   renderTodo();
   renderExport();
+  renderSubList();
 }
 // "Perlu tindakan": rejected photos for everyone, the review queue for admins
 function renderTodo(){
@@ -1826,6 +1885,7 @@ document.addEventListener("click",e=>{
   else if(t.dataset.act==="close") closeViewer();
   else if(t.dataset.act==="dl") downloadPhoto();
   else if(t.dataset.act==="xlsx") exportRange();
+  else if(t.dataset.act==="subxlsx") exportSubList();
   else if(t.dataset.xr){ const [a,b]=t.dataset.xr.split("|"); state.range={from:a,to:b,forMonth:state.month,touched:true}; state.rplan=null; renderExport(); }
   else if(t.dataset.act==="del"){state.viewing.confirm=true;renderViewer()}
   else if(t.dataset.act==="delno"){state.viewing.confirm=false;renderViewer()}
