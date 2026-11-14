@@ -1417,7 +1417,7 @@ function storageHtml(){
   if(st.error) return `<section class="acard"><h2>Storan aplikasi</h2><div class="muted">Maklumat storan tidak dapat dimuatkan.</div></section>`;
   const u=st.usage, pct=u.maxBytes?Math.min(100,u.bytes/u.maxBytes*100):0;
   return `<section class="acard"><h2>Storan aplikasi</h2>
-    <div class="big">${fmtSize(u.bytes)}<small>digunakan${u.maxBytes?` daripada ${fmtSize(u.maxBytes)} (pelan percuma Supabase)`:""}</small></div>
+    <div class="big">${fmtSize(u.bytes)}</div>
     ${u.maxBytes?`<div class="meter${pct>80?" hi":""}"><i style="width:${pct.toFixed(1)}%"></i></div>`:""}
     <div class="muted"><span class="num">${u.files}</span> fail${u.maxFiles?` daripada had <span class="num">${u.maxFiles}</span>`:""}${u.maxBytes?` · <span class="num">${pct.toFixed(1)}%</span> penuh`:""}</div>
   </section>`;
