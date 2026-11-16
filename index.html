@@ -1150,6 +1150,12 @@ function sentRows(reports){
     const d=new Date(at); if(isNaN(d)) continue; rows.push({l,d}); }
   return rows.sort((a,b)=>a.d-b.d||a.l.z.localeCompare(b.l.z)||a.l.n.localeCompare(b.l.n));
 }
+// Every kolam for the Senarai Kolam Siap download: sent ones first (by first send date), then the rest with no date
+function subListRows(reports){
+  const sent=sentRows(reports), done=new Set(sent.map(r=>r.l.id));
+  const rest=LOCS.filter(l=>!done.has(l.id)).sort((a,b)=>a.z.localeCompare(b.z)||a.n.localeCompare(b.n)).map(l=>({l,d:null}));
+  return sent.concat(rest);
+}
 const SUB_FIRST="2026-10"; // contract start; the list offers every month from here to this month
 const subMonth=()=>state.subMonth||state.month;
 state.subCount={}; // month -> number of kolam sent, for months other than the live one
@@ -1167,7 +1173,7 @@ function renderSubList(){
   if(!document.getElementById("sub-month")){ // built once so the month list is not reset by live updates
     el.innerHTML=`<span class="export-ic">${ICON.xls}</span>
       <span class="export-t">Senarai Kolam Siap</span>
-      <span class="export-s">Kolam yang semua fotonya telah dihantar (Hantar) dalam rekod bulan yang dipilih, dengan tarikh mula-mula dihantar. Zon, Taman, Jalan dan Kolam dalam lajur berasingan.</span>
+      <span class="export-s">Semua kolam dalam rekod bulan yang dipilih. Kolam yang semua fotonya telah dihantar (Hantar) disenaraikan dahulu dengan tarikh mula-mula dihantar; kolam yang belum dihantar di bawahnya dengan tarikh kosong. Zon, Taman, Jalan dan Kolam dalam lajur berasingan.</span>
       <label class="field xmonth"><span>Bulan</span><select id="sub-month"></select></label>
       <div class="xsum" id="sub-sum" aria-live="polite"></div>
       <button class="btn" data-act="subxlsx" id="sub-btn"></button>`;
@@ -1182,10 +1188,10 @@ function renderSubList(){
   const n=subCountFor(m);
   document.getElementById("sub-sum").innerHTML=n===null?`<span class="muted">Memuatkan rekod…</span>`
     :n==="err"?`<span class="xerr">Rekod tidak dapat dimuatkan. Semak sambungan.</span>`
-    :n?`<span class="muted"><span class="num">${n}</span> kolam dihantar dalam rekod ${fmtMonth(m)}</span>`
-    :`<span class="muted">Tiada kolam dihantar dalam rekod ${fmtMonth(m)}.</span>`;
+    :n?`<span class="muted"><span class="num">${n}</span> daripada ${LOCS.length} kolam dihantar dalam rekod ${fmtMonth(m)}</span>`
+    :`<span class="muted">Tiada kolam dihantar lagi dalam rekod ${fmtMonth(m)}. Fail akan menyenaraikan semua ${LOCS.length} kolam dengan tarikh kosong.</span>`;
   const btn=document.getElementById("sub-btn");
-  btn.disabled=busy||!(typeof n==="number"&&n>0);
+  btn.disabled=busy||typeof n!=="number";
   btn.textContent=busy?"Membina fail Excel…":`Muat turun Excel (${fmtMonth(m)})`;
 }
 const xmlEsc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -1197,12 +1203,14 @@ async function buildSubXlsx(month,rows){
   const now=new Date(), stamp=`${now.getDate()} ${BLN3[now.getMonth()]} ${now.getFullYear()} ${p2(now.getHours())}:${p2(now.getMinutes())}`;
   const out=[];
   out.push(`<row r="1" ht="20" customHeight="1">${str(1,0,`Kolam ready to submit – ${fmtMonth(month)}`,1)}</row>`);
-  out.push(`<row r="2">${str(2,0,`Source: BluApp, ${fmtMonth(month)} records, downloaded ${stamp}. Date = the day the full photo set was sent with Hantar; for kolam sent more than once, the first send.`,2)}</row>`);
+  out.push(`<row r="2">${str(2,0,`Source: BluApp, ${fmtMonth(month)} records, downloaded ${stamp}. All ${rows.length} kolam are listed. Date = the day the full photo set was sent with Hantar; for kolam sent more than once, the first send. Kolam not sent yet are listed last with the date left empty.`,2)}</row>`);
   out.push(`<row r="4">${["No.","Zone","Taman","Jalan","Kolam Number","Date Ready to Submit"].map((h,i)=>str(4,i,h,3)).join("")}</row>`);
   rows.forEach(({l,d},i)=>{ const r=5+i;
-    out.push(`<row r="${r}">${num(r,0,i+1,5)}${str(r,1,l.z,5)}${str(r,2,l.t,4)}${str(r,3,l.j,4)}${str(r,4,l.k,5)}${num(r,5,excelDay(d),6)}</row>`); });
-  const last=4+rows.length, tr=last+2;
+    out.push(`<row r="${r}">${num(r,0,i+1,5)}${str(r,1,l.z,5)}${str(r,2,l.t,4)}${str(r,3,l.j,4)}${str(r,4,l.k,5)}${d?num(r,5,excelDay(d),6):`<c r="F${r}" s="6"/>`}</row>`); });
+  const last=4+rows.length, tr=last+2, nSent=rows.filter(r=>r.d).length;
   out.push(`<row r="${tr}">${str(tr,0,"Total kolam",7)}<c r="B${tr}" s="8"><f>COUNTA(C5:C${last})</f><v>${rows.length}</v></c></row>`);
+  out.push(`<row r="${tr+1}">${str(tr+1,0,"Ready to submit",7)}<c r="B${tr+1}" s="8"><f>COUNT(F5:F${last})</f><v>${nSent}</v></c></row>`);
+  out.push(`<row r="${tr+2}">${str(tr+2,0,"Not yet submitted",7)}<c r="B${tr+2}" s="8"><f>B${tr}-B${tr+1}</f><v>${rows.length-nSent}</v></c></row>`);
   zip.file("[Content_Types].xml",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`);
   zip.file("_rels/.rels",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`);
   zip.file("xl/workbook.xml",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Ready to Submit" sheetId="1" r:id="rId1"/></sheets><definedNames><definedName name="_xlnm._FilterDatabase" localSheetId="0" hidden="1">'Ready to Submit'!$A$4:$F$${last}</definedName></definedNames><calcPr calcId="191029" fullCalcOnLoad="1"/></workbook>`);
@@ -1217,9 +1225,8 @@ async function exportSubList(){
   if(!window.JSZip){toast("Komponen Excel gagal dimuatkan. Muat semula halaman.",true);return}
   const month=subMonth(); state.subx=true; renderSubList();
   try{
-    const {reports}=await monthData(month,true), rows=sentRows(reports);
-    if(month!==state.month) state.subCount[month]=rows.length;
-    if(!rows.length){ toast(`Tiada kolam dihantar dalam rekod ${fmtMonth(month)}.`,true); return; }
+    const {reports}=await monthData(month,true), rows=subListRows(reports);
+    if(month!==state.month) state.subCount[month]=rows.filter(r=>r.d).length;
     const bytes=await buildSubXlsx(month,rows);
     await downloads.save({filename:`Kolam Ready to Submit - ${fmtMonth(month)}.xlsx`,data:new Blob([bytes],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"})});
     toast("Excel dimuat turun");
