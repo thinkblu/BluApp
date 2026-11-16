@@ -1027,9 +1027,11 @@ function rangePlan(from,to,data){ // data: {month:{reports,reviews}}
         const rv=reviews[l.id]?.[t.key]?.[st.key];
         if(rv&&rv.asset===p.asset&&rv.state==="ok"){ forms[ti].photos[si]=p.asset; n++; if(d>to) nl++; } else left++;
       }
-      if(n){ out.push({m,l,forms}); photos+=n; late+=nl; }
+      if(n){ const t=Date.parse(r.sent?.at); out.push({m,l,forms,sentAt:isNaN(t)?Infinity:t,start}); photos+=n; late+=nl; }
     }
   }
+  // Sheets in the order the kolam were sent with Hantar (latest send), earliest first; any without a send date go last
+  out.sort((a,b)=>a.sentAt-b.sentAt||a.start.localeCompare(b.start)||a.l.z.localeCompare(b.l.z)||a.l.n.localeCompare(b.l.n));
   return {sheets:out,photos,left,late,locs:new Set(out.map(x=>x.l.id)).size,multi:new Set(out.map(x=>x.m)).size>1};
 }
 function sheetNamesFor(plan){
@@ -1063,7 +1065,7 @@ function renderExport(){
   if(!document.getElementById("x-from")){ // built once so the date pickers are not reset by live updates
     el.innerHTML=`<span class="export-ic">${ICON.xls}</span>
       <span class="export-t">Muat turun Laporan LK-1e</span>
-      <span class="export-s">Foto Sebelum, Semasa dan Selepas yang telah disahkan. Kolam dipilih mengikut tarikh foto pertamanya, dan semua fotonya dimasukkan, termasuk yang diambil selepas tarikh akhir.</span>
+      <span class="export-s">Foto Sebelum, Semasa dan Selepas yang telah disahkan. Kolam dipilih mengikut tarikh foto pertamanya, dan semua fotonya dimasukkan, termasuk yang diambil selepas tarikh akhir. Sheet disusun mengikut tarikh kolam dihantar, yang terawal dahulu.</span>
       <div class="xrange">
         <label class="field"><span>Dari</span><input type="date" id="x-from" max="${today}"></label>
         <label class="field"><span>Hingga</span><input type="date" id="x-to" max="${today}"></label>
