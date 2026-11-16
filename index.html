@@ -1027,10 +1027,10 @@ function rangePlan(from,to,data){ // data: {month:{reports,reviews}}
         const rv=reviews[l.id]?.[t.key]?.[st.key];
         if(rv&&rv.asset===p.asset&&rv.state==="ok"){ forms[ti].photos[si]=p.asset; n++; if(d>to) nl++; } else left++;
       }
-      if(n){ const t=Date.parse(r.sent?.at); out.push({m,l,forms,sentAt:isNaN(t)?Infinity:t,start}); photos+=n; late+=nl; }
+      if(n){ const t=Date.parse(firstSentAt(r)); out.push({m,l,forms,sentAt:isNaN(t)?Infinity:t,start}); photos+=n; late+=nl; }
     }
   }
-  // Sheets in the order the kolam were sent with Hantar (latest send), earliest first; any without a send date go last
+  // Sheets in the order the kolam were sent with Hantar (first send), earliest first; any without a send date go last
   out.sort((a,b)=>a.sentAt-b.sentAt||a.start.localeCompare(b.start)||a.l.z.localeCompare(b.l.z)||a.l.n.localeCompare(b.l.n));
   return {sheets:out,photos,left,late,locs:new Set(out.map(x=>x.l.id)).size,multi:new Set(out.map(x=>x.m)).size>1};
 }
@@ -1065,7 +1065,7 @@ function renderExport(){
   if(!document.getElementById("x-from")){ // built once so the date pickers are not reset by live updates
     el.innerHTML=`<span class="export-ic">${ICON.xls}</span>
       <span class="export-t">Muat turun Laporan LK-1e</span>
-      <span class="export-s">Foto Sebelum, Semasa dan Selepas yang telah disahkan. Kolam dipilih mengikut tarikh foto pertamanya, dan semua fotonya dimasukkan, termasuk yang diambil selepas tarikh akhir. Sheet disusun mengikut tarikh kolam dihantar, yang terawal dahulu.</span>
+      <span class="export-s">Foto Sebelum, Semasa dan Selepas yang telah disahkan. Kolam dipilih mengikut tarikh foto pertamanya, dan semua fotonya dimasukkan, termasuk yang diambil selepas tarikh akhir. Sheet disusun mengikut tarikh kolam mula-mula dihantar, yang terawal dahulu.</span>
       <div class="xrange">
         <label class="field"><span>Dari</span><input type="date" id="x-from" max="${today}"></label>
         <label class="field"><span>Hingga</span><input type="date" id="x-to" max="${today}"></label>
@@ -1136,10 +1136,17 @@ async function exportRange(){
 }
 
 /* Senarai kolam sedia dihantar: one row per kolam that was sent with Hantar in the chosen month's record,
-   with the day it was (last) sent. Admin only; a small stand-alone .xlsx built with JSZip. */
+   with the day it was first sent. Admin only; a small stand-alone .xlsx built with JSZip. */
+// First time a kolam was sent with Hantar: the earliest entry in the send history (sent.hist), else the current send date
+function firstSentAt(r){
+  const sn=r?.sent; if(!sn) return null;
+  const ts=(Array.isArray(sn.hist)?sn.hist:[]).map(h=>Date.parse(h?.at)).filter(t=>!isNaN(t));
+  if(ts.length) return new Date(Math.min(...ts)).toISOString();
+  return sn.at||null;
+}
 function sentRows(reports){
   const rows=[];
-  for(const l of LOCS){ const at=reports[l.id]?.sent?.at; if(!at) continue;
+  for(const l of LOCS){ const at=firstSentAt(reports[l.id]); if(!at) continue;
     const d=new Date(at); if(isNaN(d)) continue; rows.push({l,d}); }
   return rows.sort((a,b)=>a.d-b.d||a.l.z.localeCompare(b.l.z)||a.l.n.localeCompare(b.l.n));
 }
@@ -1160,7 +1167,7 @@ function renderSubList(){
   if(!document.getElementById("sub-month")){ // built once so the month list is not reset by live updates
     el.innerHTML=`<span class="export-ic">${ICON.xls}</span>
       <span class="export-t">Senarai Kolam Siap</span>
-      <span class="export-s">Kolam yang semua fotonya telah dihantar (Hantar) dalam rekod bulan yang dipilih, dengan tarikh dihantar. Zon, Taman, Jalan dan Kolam dalam lajur berasingan.</span>
+      <span class="export-s">Kolam yang semua fotonya telah dihantar (Hantar) dalam rekod bulan yang dipilih, dengan tarikh mula-mula dihantar. Zon, Taman, Jalan dan Kolam dalam lajur berasingan.</span>
       <label class="field xmonth"><span>Bulan</span><select id="sub-month"></select></label>
       <div class="xsum" id="sub-sum" aria-live="polite"></div>
       <button class="btn" data-act="subxlsx" id="sub-btn"></button>`;
@@ -1190,7 +1197,7 @@ async function buildSubXlsx(month,rows){
   const now=new Date(), stamp=`${now.getDate()} ${BLN3[now.getMonth()]} ${now.getFullYear()} ${p2(now.getHours())}:${p2(now.getMinutes())}`;
   const out=[];
   out.push(`<row r="1" ht="20" customHeight="1">${str(1,0,`Kolam ready to submit – ${fmtMonth(month)}`,1)}</row>`);
-  out.push(`<row r="2">${str(2,0,`Source: BluApp, ${fmtMonth(month)} records, downloaded ${stamp}. Date = the day the full photo set was sent with Hantar; for kolam sent more than once, the latest send.`,2)}</row>`);
+  out.push(`<row r="2">${str(2,0,`Source: BluApp, ${fmtMonth(month)} records, downloaded ${stamp}. Date = the day the full photo set was sent with Hantar; for kolam sent more than once, the first send.`,2)}</row>`);
   out.push(`<row r="4">${["No.","Zone","Taman","Jalan","Kolam Number","Date Ready to Submit"].map((h,i)=>str(4,i,h,3)).join("")}</row>`);
   rows.forEach(({l,d},i)=>{ const r=5+i;
     out.push(`<row r="${r}">${num(r,0,i+1,5)}${str(r,1,l.z,5)}${str(r,2,l.t,4)}${str(r,3,l.j,4)}${str(r,4,l.k,5)}${num(r,5,excelDay(d),6)}</row>`); });
